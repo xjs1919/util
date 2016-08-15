@@ -4,7 +4,7 @@
  * author: shiqun.shi@alipay.com
  */
 
-package com.chrhc.xjs.util;
+package com.github.xjs.util;
 
 public final class Base64 {
 

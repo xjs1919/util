@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.chrhc.xjs.util;
+package com.github.xjs.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

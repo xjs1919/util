@@ -1,4 +1,4 @@
-package com.chrhc.xjs.util;
+package com.github.xjs.util;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
