@@ -12,7 +12,7 @@ import java.io.Closeable;
  */
 public class IOUtil {
 	
-	public static void close(Closeable... closeables){
+	public static void closeQuietly(Closeable... closeables){
 		if(closeables == null || closeables.length <= 0){
 			return;
 		}

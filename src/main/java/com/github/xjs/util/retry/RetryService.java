@@ -6,11 +6,8 @@ package com.github.xjs.util.retry;
 import java.util.List;
 import java.util.concurrent.DelayQueue;
 
-import com.github.xjs.util.retry.RetryAble;
-import com.github.xjs.util.retry.RetryTask;
-import com.github.xjs.util.retry.RetryService.OnRetryListener;
-import com.github.xjs.util.retry.persist.PersistService;
 import com.github.xjs.util.ThreadPoolUtil;
+import com.github.xjs.util.retry.persist.PersistService;
 
 /**
  * @author 605162215@qq.com
