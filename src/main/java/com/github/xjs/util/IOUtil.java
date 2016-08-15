@@ -3,7 +3,10 @@
  */
 package com.github.xjs.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author 605162215@qq.com
@@ -25,6 +28,17 @@ public class IOUtil {
 				}
 			}
 		}
+	}
+	
+	public static byte[] readInputStream(InputStream in) throws IOException{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		int len = 0;
+		byte[] buff = new byte[10*1024];
+		while((len = in.read(buff)) != -1){
+			out.write(buff, 0 ,len);
+		}
+		out.close();
+		return out.toByteArray();
 	}
 	
 }

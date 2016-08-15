@@ -3,7 +3,6 @@
  */
 package com.github.xjs.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,14 +28,8 @@ public class WebUtil {
 		InputStream in = null;
 		try{
 			in = request.getInputStream();
-			int len = 0;
-			byte[] buff = new byte[1024];
-			ByteArrayOutputStream bout = new ByteArrayOutputStream();
-			while((len = in.read(buff)) != -1){
-				bout.write(buff, 0 ,len);
-			}
-			IOUtil.closeQuietly(bout);
-			return new String(bout.toByteArray(),"UTF-8");
+			byte[] data = IOUtil.readInputStream(in);
+			return new String(data,"UTF-8");
 		}catch(Exception e){
 			e.printStackTrace();
 			IOUtil.closeQuietly(in);
