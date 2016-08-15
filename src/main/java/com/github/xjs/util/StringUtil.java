@@ -3,6 +3,8 @@
  */
 package com.github.xjs.util;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,42 @@ public class StringUtil {
 		}
 
 		return result;
+	}
+	
+	public static String toString(byte[] data){
+		try{
+			return toString(data, "UTF-8");
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static String toString(byte[] data, String charset){
+		try{
+			return new String(data, charset);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static String urlEncode(String url){
+		try{
+			return URLEncoder.encode(url, "UTF-8");
+		}catch(Exception e){
+			e.printStackTrace();
+			return url;
+		}
+	}
+	
+	public static String urlDecode(String url){
+		try{
+			return URLDecoder.decode(url, "UTF-8");
+		}catch(Exception e){
+			e.printStackTrace();
+			return url;
+		}
 	}
 
 	public static String underlineToCamel(String param) {
