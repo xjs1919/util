@@ -3,7 +3,9 @@
  */
 package com.chrhc.xjs.util;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 605162215@qq.com
@@ -48,4 +50,12 @@ public class CollectionUtil {
         }
         return false;
     }
+    
+    public static boolean isEmpty(Collection<?> collection) {
+		return (collection == null) || collection.isEmpty();
+	}
+    
+    public static boolean isEmpty(Map<?,?> map) {
+		return (map == null) || map.isEmpty();
+	}
 }
