@@ -6,6 +6,7 @@ package com.github.xjs.util;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * @author 605162215@qq.com
@@ -13,6 +14,24 @@ import java.util.Map;
  * 2016年8月12日 下午5:27:50
  */
 public class CollectionUtil {
+	
+	public static <T> T find(List<T> collection, Predicate<T> predicate){
+        for(T elem : collection){
+            if(predicate.test(elem)){
+            	return elem;
+            }
+        }
+        return null;
+    }
+	
+	public static <T> boolean contains(List<T> collection, Predicate<T> predicate){
+        for(T elem : collection){
+            if(predicate.test(elem)){
+            	return true;
+            }
+        }
+        return false;
+    }
 	
 	public interface Has<T, F>{
         public boolean has(T bean, F fieldValue);
