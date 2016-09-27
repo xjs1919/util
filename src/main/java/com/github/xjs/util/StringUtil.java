@@ -5,6 +5,9 @@ package com.github.xjs.util;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -106,5 +109,26 @@ public class StringUtil {
 			}
 		}
 		return sb.toString();
+	}
+	
+	public static List<String> split(String src, String sep){
+		Predicate<String> predicate = (fieldValue)->{return fieldValue!=null && !"".equals(fieldValue);};
+		return split(src, sep, predicate);
+	}
+
+	public static List<String> split(String src, String sep, Predicate<String> predicate){
+		if( src == null || src.length() <= 0 ||
+			sep == null || sep.length() <= 0 ||
+			predicate == null){
+			return null;
+		}
+		String arr[] = src.split(sep);
+		List<String> list = new ArrayList<String>(arr.length);
+		for(String str : arr){
+			if(predicate.test(str)){
+				list.add(str);
+			}
+		}
+		return list;
 	}
 }
