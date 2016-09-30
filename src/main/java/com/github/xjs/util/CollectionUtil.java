@@ -130,4 +130,17 @@ public class CollectionUtil {
             return null;
         }
     }
+	
+	public static <T> List<T> subList(Collection<T> collection, Predicate<T> predicate){
+		if(collection == null || collection.size() <= 0){
+			return null;
+		}
+		List<T> ret = new ArrayList<T>(collection.size());
+		for(T elem : collection){
+			if(predicate.test(elem)){
+				ret.add(elem);
+			}
+		}
+		return ret;
+	}
 }
