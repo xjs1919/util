@@ -68,7 +68,6 @@ public class DateUtil {
     		e.printStackTrace();
     		return null;
     	}
-        
     }  
     
 	public static String format(Date date, String format){
@@ -130,8 +129,37 @@ public class DateUtil {
 		return cal.getTime();
 	}
 	
+	public static Date firstDayOfMonth(){
+		return firstDayOfMonth(null); 
+	}
+	
+	public static Date firstDayOfMonth(Date date){
+		Calendar  cal = Calendar.getInstance(DEFAULT_LOCALE);  
+		if(date != null){
+			cal.setTime(date);
+		}
+        int firstDay  = cal.getActualMinimum(Calendar.DAY_OF_MONTH); 
+        cal.set(Calendar.DAY_OF_MONTH, firstDay);
+        return cal.getTime();  
+	}
+	
+	public static Date lastDayOfMonth(){
+		return lastDayOfMonth(null);
+	}
+	
+	public static Date lastDayOfMonth(Date date){
+		Calendar  cal = Calendar.getInstance(DEFAULT_LOCALE); 
+		if(date != null){
+			cal.setTime(date);
+		}
+        int lastDay  = cal.getActualMaximum(Calendar.DAY_OF_MONTH);  
+        cal.set(Calendar.DAY_OF_MONTH, lastDay);
+        return cal.getTime();  
+	}
+	
 	public static void main(String[] args) {
 		System.out.println(format(addMinute(new Date(), -5),FORMAT_YMDHMS));
 		System.out.println(format(addHours(new Date(), -5),FORMAT_YMDHMS));
+		System.out.println(format(firstDayOfMonth(),FORMAT_YMD)+","+format(lastDayOfMonth(),FORMAT_YMD));
 	}
 }

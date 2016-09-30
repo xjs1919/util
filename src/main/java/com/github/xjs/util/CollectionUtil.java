@@ -61,8 +61,7 @@ public class CollectionUtil {
             return null;
         }
         try{
-            Object[] arr = collection.toArray();
-            BeanInfo bi = Introspector.getBeanInfo(arr[0].getClass());
+            BeanInfo bi = Introspector.getBeanInfo(collection.iterator().next().getClass());
             PropertyDescriptor[] pds = bi.getPropertyDescriptors();
             if(pds == null || pds.length <= 0){
                 return null;
