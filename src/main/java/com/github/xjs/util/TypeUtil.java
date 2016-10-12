@@ -33,4 +33,47 @@ public class TypeUtil {
 		return false;
 	}
 	
+	public static ClassLoader getDefaultClassLoader() {
+		ClassLoader cl = null;
+		try {
+			cl = Thread.currentThread().getContextClassLoader();
+		}
+		catch (Throwable ex) {
+			// Cannot access thread context ClassLoader - falling back to system class loader...
+		}
+		if (cl == null) {
+			// No thread context class loader -> use class loader of this class.
+			cl = TypeUtil.class.getClassLoader();
+		}
+		return cl;
+	}
+	
+	public static Class<?> forName(String name) throws ClassNotFoundException, LinkageError {
+		return forName(name, null);
+	}
+	
+	public static Class<?> forName(String name, ClassLoader classLoader) throws ClassNotFoundException, LinkageError {
+		ClassLoader classLoaderToUse = classLoader;
+		if (classLoaderToUse == null) {
+			classLoaderToUse = getDefaultClassLoader();
+		}
+		try {
+			return classLoaderToUse.loadClass(name);
+		}
+		catch (ClassNotFoundException ex) {
+			int lastDotIndex = name.lastIndexOf('.');
+			if (lastDotIndex != -1) {
+				String innerClassName = name.substring(0, lastDotIndex) + '$' + name.substring(lastDotIndex + 1);
+				try {
+					return classLoaderToUse.loadClass(innerClassName);
+				}
+				catch (ClassNotFoundException ex2) {
+					// swallow - let original exception get through
+				}
+			}
+			throw ex;
+		}
+	}
+
+	
 }

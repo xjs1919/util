@@ -8,6 +8,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -104,5 +105,10 @@ public class CollectionUtil {
 			}
 		}
 		return ret;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static List arrayToList(Object source) {
+		return Arrays.asList(ObjectUtil.toObjectArray(source));
 	}
 }
