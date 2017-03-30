@@ -6,6 +6,8 @@ package com.github.xjs.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -72,19 +74,29 @@ private IDUtil(){}
 
 	private static int getSN() {
 		int num = UNIQUE_ID.incrementAndGet();
-		if (num == MAX_ID) {//单线程一个毫秒可能会生成超过127个，时间部分增加下，保证严格递增
-			try{
-				Thread.sleep(1);
-			}catch(Exception e){
-				e.printStackTrace();
+		if (num >= MAX_ID) {//单线程一个毫秒可能会生成超过127个，时间部分增加下，保证严格递增
+			if(UNIQUE_ID.compareAndSet(MAX_ID, 1)){
+				try{
+					Thread.sleep(1);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				return num;
+			}else{
+				UNIQUE_ID.set(1);
+				try{
+					Thread.sleep(1);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+				return getSN();
 			}
-			num = RND.nextInt(10);
-			UNIQUE_ID.set(num);
 		}
 		return num;
 	}
 
 	public static void main(String[] args) throws Exception {
+		//1.多线程测试
 //		long start = System.currentTimeMillis();
 //		final ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
 //		int threadCount = 10000;//单机1万并发没有问题
@@ -114,7 +126,7 @@ private IDUtil(){}
 //		System.out.println(map.size());
 //		long end = System.currentTimeMillis();
 //		System.out.println("use:" + (end - start));
-		
+		//2.单线程测试
 		List<Long> list = new ArrayList<Long>();
 		for(int i=0;i<5000;i++){
 			long id = getId(1, 1);
