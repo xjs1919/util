@@ -12,33 +12,29 @@ import java.util.EnumSet;
  */
 public class EnumUtil {
 	
-	public interface Identifiable<K> {  
-	    K getId();  
-	}  
+	public interface BaseEnum<V> {
+		public V getValue();
+		public String getLabel();
+	}
 	
-	public static <T extends Enum<T> & Identifiable<K>, K > T getEnum(Class<T> type, K id) {
-		T[] arr = type.getEnumConstants();
-		if(arr == null || arr.length <= 0){
-			return null;
+	public static <T extends Enum<T> & BaseEnum<V>, V> T getByValue(Class<T> clazz, V id){
+		EnumSet<T> set = EnumSet.allOf(clazz);
+		for(T t : set){
+			if(t.getValue().equals(id)){
+				return t;
+			}
 		}
-        for (T t : arr) {  
-            if(t.getId().equals(id)) {  
-                return t;  
-            }  
-        }  
-        return null;
-    }  
+		return null;
+	}
 	
-    public static <T extends Enum<T> & Identifiable<K> , K > T get(Class<T> type, K id) {  
-        EnumSet<T> set = EnumSet.allOf(type);  
-        if(set == null || set.size() <= 0){  
-            return null;  
-        }  
-        for(T t: set){  
-            if(t.getId().equals(id)){  
-                return t;  
-            }  
-        }  
-        return null;  
-    }  
+	public static <T extends Enum<T> & BaseEnum<V>, V> T getByLabel(Class<T> clazz, String label){
+		EnumSet<T> set = EnumSet.allOf(clazz);
+		for(T t : set){
+			if(t.getLabel().equals(label)){
+				return t;
+			}
+		}
+		return null;
+	}
+	
 }
