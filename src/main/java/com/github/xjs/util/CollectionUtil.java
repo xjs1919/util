@@ -111,4 +111,26 @@ public class CollectionUtil {
 	public static List arrayToList(Object source) {
 		return Arrays.asList(ObjectUtil.toObjectArray(source));
 	}
+	
+	public static <T> String join(List<T> collection){
+		return join(collection, ",");
+	}
+	
+	public static <T> String join(List<T> collection, String sep){
+		if(collection == null || collection.size() <= 0){
+			return "";
+		}
+		if(StringUtil.isEmpty(sep)){
+			sep = "";
+		}
+		StringBuilder sb = new StringBuilder();
+		for(int i=0; i<collection.size(); i++){
+			T t = collection.get(i);
+			sb.append(t.toString());
+			if(i<collection.size()-1){
+				sb.append(sep);
+			}
+		}
+		return sb.toString();
+	}
 }

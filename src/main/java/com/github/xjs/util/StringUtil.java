@@ -5,6 +5,7 @@ package com.github.xjs.util;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,6 +19,21 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
 
+	/**
+	 * 去掉首尾的空格，包括全角空格
+	 * */
+	public static String trimSpace(String src){
+		if(isEmpty(src)){
+			return src;
+		}
+		return src.replaceAll("^[　\\s]+", "").replaceAll("[　\\s]+$", "");
+	}
+	
+	public static String save2(double d) {
+		DecimalFormat df = new DecimalFormat("0.00");
+		return df.format(d);
+	}
+	
 	public static boolean isEmpty(String src) {
 		if (src == null || src.trim().length() <= 0) {
 			return true;
@@ -130,5 +146,34 @@ public class StringUtil {
 			}
 		}
 		return list;
+	}
+	
+	public static String formatTime(int seconds) {
+		int hour = seconds/3600;
+		int secondLeft = seconds - seconds/3600*3600;
+		int minute = secondLeft/60;
+		secondLeft = secondLeft - secondLeft/60*60;
+		int second = secondLeft;
+		StringBuilder sb = new StringBuilder();
+		if(hour > 0){
+			if(hour > 9){
+				sb.append(hour);
+			}else{
+				sb.append("0").append(hour);
+			}
+			sb.append(":");
+		}
+		if(minute>9){
+			sb.append(minute);
+		}else{
+			sb.append("0").append(minute);
+		}
+		sb.append(":");
+		if(second>9){
+			sb.append(second);
+		}else{
+			sb.append("0").append(second);
+		}
+		return sb.toString();
 	}
 }
