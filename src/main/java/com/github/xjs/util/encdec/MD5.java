@@ -1,8 +1,10 @@
-package com.github.xjs.util;
+package com.github.xjs.util.encdec;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import com.github.xjs.util.HexUtil;
 
 public class MD5 {
 

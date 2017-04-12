@@ -1,5 +1,5 @@
 
-package com.github.xjs.util;
+package com.github.xjs.util.encdec;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;

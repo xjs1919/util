@@ -1,6 +1,6 @@
 package com.github.xjs.util.enums;
 
-public class BaseEnum<T> implements EnumAble<T> {
+public abstract class BaseEnum<T> implements EnumAble<T> {
 	private T key;
 	private String label;
 	public BaseEnum(T key, String label){
