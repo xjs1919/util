@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.xjs.util.ThreadPoolUtil;
+
 public class WorkingQueue<T extends BaseRequest> {
 
 	private static Logger log = LoggerFactory.getLogger(WorkingQueue.class);
@@ -42,7 +44,11 @@ public class WorkingQueue<T extends BaseRequest> {
 				while (shouldContinue) {
 					try {
 						T req = queue.take();
-						req.getLazyExecutor().lazyExecute(req);
+						ThreadPoolUtil.execute(new Runnable(){
+							public void run(){
+								req.getLazyExecutor().lazyExecute(req);
+							}
+						});
 					} catch (Exception e) {
 						log.error("Unexpected message caught... Shouldn't be here", e);
 					}
