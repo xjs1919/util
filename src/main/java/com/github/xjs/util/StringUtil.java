@@ -162,6 +162,8 @@ public class StringUtil {
 				sb.append("0").append(hour);
 			}
 			sb.append(":");
+		}else{
+			sb.append("00:");
 		}
 		if(minute>9){
 			sb.append(minute);
