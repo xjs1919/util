@@ -5,11 +5,6 @@ public class Response<T> {
 	private String errmsg;
 	private T data;
 
-	public Response(ICodeMsg codeMsg){//异常
-		this.errcode = codeMsg.getErrcode();
-		this.errmsg = codeMsg.getErrmsg();
-	}
-	
 	public Response(){
 		this((T)null);
 	}
@@ -20,9 +15,9 @@ public class Response<T> {
 		this.data = data;
 	}
 	
-	public Response(int errcode, String errmsg){//异常
-		this.errcode = errcode;
-		this.errmsg = errmsg;
+	public Response(ICodeMsg codeMsg){//异常
+		this.errcode = codeMsg.getErrcode();
+		this.errmsg = codeMsg.getErrmsg();
 	}
 	
 	/**
@@ -44,6 +39,14 @@ public class Response<T> {
 	 * */
 	public static <T> Response<T> error(Response<?> response){
 		return new Response<T>(response.getErrcode(), response.getErrmsg());
+	}
+	
+	/**
+	 * 异常，不让外部使用
+	 * */
+	private Response(int errcode, String errmsg){
+		this.errcode = errcode;
+		this.errmsg = errmsg;
 	}
 	
 	public int getErrcode() {
