@@ -6,14 +6,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.github.xjs.util.LogUtil;
 import com.github.xjs.util.ThreadPoolUtil;
 
 public class WorkingQueue<T extends BaseRequest> {
 
-	private static Logger log = LoggerFactory.getLogger(WorkingQueue.class);
 	private BlockingQueue<T> queue;
 	private final ThreadFactory threadFactory;
 	private Thread thread;
@@ -50,7 +47,7 @@ public class WorkingQueue<T extends BaseRequest> {
 							}
 						});
 					} catch (Exception e) {
-						log.error("Unexpected message caught... Shouldn't be here", e);
+						LogUtil.error(()->"Unexpected message caught... Shouldn't be here", ()->e);
 					}
 				}
 			}
