@@ -3,11 +3,6 @@
  */
 package com.github.xjs.util;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -45,61 +40,18 @@ public class CollectionUtil {
 		return (map == null) || map.isEmpty();
 	}
     
-    public static <R,T> List<R> extractNotEmptyString(Collection<T> collection, Function<T, R> mapper){
+    public static <R,T> List<R> extract(Collection<T> collection, Function<T, R> mapper){
     	if(collection == null || collection.size() <= 0 || mapper == null){
     		return null;
     	}
     	return collection.stream().map(mapper).collect(Collectors.toList());
     }
     
-    @Deprecated
-    public static <R,T> List<R> extractNotEmptyString(Collection<T> collection, String fieldName){
-    	Predicate<R> predicate = (fieldValue)->{return fieldValue!=null && !"".equals(fieldValue);};
-    	return extract(collection, fieldName, predicate);
-    }
-    
-    @Deprecated
-    public static <R,T> List<R> extract(Collection<T> collection, String fieldName){
-    	Predicate<R> predicate = (fieldValue)->fieldValue!=null;
-    	return extract(collection, fieldName, predicate);
-    }
-    
-    @Deprecated
-	public static <R,T> List<R> extract(Collection<T> collection, String fieldName, Predicate<R> predicate){
-        if(collection == null || collection.size() <= 0){
-            return null;
-        }
-        try{
-            BeanInfo bi = Introspector.getBeanInfo(collection.iterator().next().getClass());
-            PropertyDescriptor[] pds = bi.getPropertyDescriptors();
-            if(pds == null || pds.length <= 0){
-                return null;
-            }
-            Method readMethod = null;
-            for(PropertyDescriptor pd : pds){
-                if(pd.getName().equals(fieldName)){
-                    readMethod = pd.getReadMethod();
-                    break;
-                }
-            }
-            if(readMethod == null){
-            	return null;
-            }
-            List<R> retList = new ArrayList<R>(collection.size());
-            for(T elem : collection){
-                @SuppressWarnings("unchecked")
-				R r = (R)readMethod.invoke(elem, (Object[])null);
-                if(predicate != null){
-                    if(predicate.test(r)){
-                        retList.add(r);
-                    }
-                }
-            }
-            return retList;
-        }catch(Exception e){
-            e.printStackTrace();
-            return null;
-        }
+    public static <R,T> List<R> extract(Collection<T> collection, Function<T, R> mapper, Predicate<R> filter){
+    	if(collection == null || collection.size() <= 0 || mapper == null){
+    		return null;
+    	}
+    	return collection.stream().map(mapper).filter(filter).collect(Collectors.toList());
     }
 	
     public static <T> List<T> subList(Collection<T> collection, Predicate<T> predicate){
