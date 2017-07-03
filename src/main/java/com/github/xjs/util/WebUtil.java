@@ -48,7 +48,7 @@ public class WebUtil {
 		}
 	}
 	
-	public static void responseJsonError(HttpServletResponse res, ICodeMsg codeMsg){
+	public static void renderJson(HttpServletResponse res, ICodeMsg codeMsg){
 		res.setContentType("application/json");
 		res.setCharacterEncoding("UTF-8");
 		try{
@@ -60,6 +60,24 @@ public class WebUtil {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	public static<T> void renderJson(HttpServletResponse res, T t){
+		res.setContentType("application/json");
+		res.setCharacterEncoding("UTF-8");
+		try{
+			Response<T> response = Response.success(t);
+			OutputStream out = res.getOutputStream();
+			out.write(JSON.toJSONString(response).getBytes("UTF-8"));
+			out.flush();
+			out.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public static boolean isAjax(HttpServletRequest request){
+		return ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With")));
 	}
 	
 	/**
