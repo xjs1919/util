@@ -48,27 +48,23 @@ public class WebUtil {
 		}
 	}
 	
-	public static void renderJson(HttpServletResponse res, ICodeMsg codeMsg){
-		res.setContentType("application/json");
-		res.setCharacterEncoding("UTF-8");
-		try{
-			Response<Void> response = Response.error(codeMsg);
-			OutputStream out = res.getOutputStream();
-			out.write(JSON.toJSONString(response).getBytes("UTF-8"));
-			out.flush();
-			out.close();
-		}catch(Exception e){
-			e.printStackTrace();
+	public static void renderJson(HttpServletResponse response, ICodeMsg codeMsg){
+		if(codeMsg == null){
+			return;
 		}
+		renderJson(response, Response.error(codeMsg));
 	}
 	
-	public static<T> void renderJson(HttpServletResponse res, T t){
-		res.setContentType("application/json");
-		res.setCharacterEncoding("UTF-8");
+	public static<T> void renderJson(HttpServletResponse response, T t){
+		renderJson(response, Response.success(t));
+	}
+	
+	private static <T> void renderJson(HttpServletResponse response, Response<T> data){
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
 		try{
-			Response<T> response = Response.success(t);
-			OutputStream out = res.getOutputStream();
-			out.write(JSON.toJSONString(response).getBytes("UTF-8"));
+			OutputStream out = response.getOutputStream();
+			out.write(JSON.toJSONString(data).getBytes("UTF-8"));
 			out.flush();
 			out.close();
 		}catch(Exception e){
