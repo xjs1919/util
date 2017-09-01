@@ -47,7 +47,7 @@ public class WorkingQueue<T extends BaseRequest> {
 							}
 						});
 					} catch (Exception e) {
-						LogUtil.error(()->"Unexpected message caught... Shouldn't be here", ()->e);
+						LogUtil.error(WorkingQueue.class, ()->"Unexpected message caught... Shouldn't be here", ()->e);
 					}
 				}
 			}

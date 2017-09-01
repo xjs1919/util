@@ -125,6 +125,7 @@ public class LogUtil {
 				logger = loggers.get(clazz);
 				if(logger == null) {
 					logger = LoggerFactory.getLogger(clazz);
+					loggers.put(clazz, logger);
 				}
 			}
 		}
