@@ -69,20 +69,10 @@ public class PoiImport {
             //获得当前行的开始列  
             int firstCellNum = row.getFirstCellNum();
             //获得当前行的列数
-			// int lastCellNum = row.getPhysicalNumberOfCells();
-			// String[] cells = new String[row.getPhysicalNumberOfCells()];
-
-			//修改记录：
-			/**
-			 * lastCellNum获取的事物理行数，假如一行数据从第10行开始有3行数据，firstCellNum是10,
-			 * lastCellNum就是3，下面的循环cellNum<lastCellNum就不会执行，这一行的数据就不会被保存。
-			 * lastCellNum修改为获取最后一行的的下标，无论从第几行有数据，firstCellNum始终小于等于lastCellNum
-			 * String[]的长度也修改一下，不然会出现数组越界
-			 */
-			int lastCellNum = row.getLastCellNum();
-			String[] cells = new String[row.getLastCellNum()];
+			int cellNums = row.getPhysicalNumberOfCells();
+			String[] cells = new String[cellNums];
             //循环当前行  
-            for(int cellNum = firstCellNum; cellNum < lastCellNum;cellNum++){  
+            for(int cellNum = firstCellNum; cellNum < firstCellNum+cellNums;cellNum++){  
                 Cell cell = row.getCell(cellNum);  
                 cells[cellNum] = getCellValue(cell);  
             }  
