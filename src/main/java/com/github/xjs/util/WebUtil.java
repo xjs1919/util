@@ -73,7 +73,15 @@ public class WebUtil {
 	}
 
 	public static boolean isAjax(HttpServletRequest request){
-		return ("XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With")));
+		String xRequestWith = request.getHeader("X-Requested-With");
+		if(xRequestWith != null && xRequestWith.indexOf("XMLHttpRequest") >= 0) {
+			return true;
+		}
+		String accept = request.getHeader("Accept");
+		if(accept != null && accept.indexOf("application/json") >= 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	/**
