@@ -38,7 +38,7 @@ public class IDUtil {
 		
 	}
 
-	public static long getId(int serverId) {// 6位，64个机器
+	public static long getId(int serverId) {
 		return instance.nextId(serverId);
 	}
 
