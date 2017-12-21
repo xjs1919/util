@@ -49,13 +49,21 @@ public class IDUtil {
 	 */
 	public synchronized long nextId(int serverId) {
 		long timestamp = timeGen();
-		// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
-		if (timestamp < lastTimestamp) {
-			throw new RuntimeException(String.format(
-					"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
-		}
-		// 如果是同一时间生成的，则进行毫秒内序列
-		if (lastTimestamp == timestamp) {
+		if (timestamp < lastTimestamp) {// 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过
+			long offset = lastTimestamp - timestamp;
+			if (offset <= 10) {//如果发生时钟回退在可接受的范围以内
+				try {
+					Thread.sleep(offset + 1);
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+				timestamp = timeGen();//再次获取时间戳
+			}
+			if (timestamp < lastTimestamp) {//如果仍然小于
+				throw new RuntimeException(String.format(
+						"Clock moved backwards.  Refusing to generate id for %d milliseconds", lastTimestamp - timestamp));
+			}
+		}else if (lastTimestamp == timestamp) {// 如果是同一毫秒生成的，则进行毫秒内序列
 			sequence = (sequence + 1) & sequenceMax;
 			// 毫秒内序列溢出
 			if (sequence == 0) {
