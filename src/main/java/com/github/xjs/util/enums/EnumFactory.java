@@ -22,28 +22,44 @@ public class EnumFactory {
 		list.add(t);
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <V, T extends BaseEnum<V>> T getByValue(Class<T> clazz, V value) {
+		return getByValue(clazz, value, false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <V, T extends BaseEnum<V>> T getByValue(Class<T> clazz, V value, boolean useDefault) {
 		init(clazz);
+		BaseEnum<V> defaultEnum = null;
 		Set<BaseEnum<V>> list = map.get(clazz);
 		for (BaseEnum<V> be : list) {
 			if (be.getValue().equals(value)) {
 				return (T) be;
 			}
+			if(useDefault && be.isDefault()) {
+				defaultEnum = be;
+			}
 		}
-		return null;
+		return (T)defaultEnum;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T extends BaseEnum<V>, V> T getByLabel(Class<T> clazz, String label) {
+		return getByLabel(clazz, label, false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends BaseEnum<V>, V> T getByLabel(Class<T> clazz, String label, boolean useDefault) {
 		init(clazz);
+		BaseEnum<V> defaultEnum = null;
 		Set<BaseEnum<V>> list = map.get(clazz);
 		for (BaseEnum<V> be : list) {
 			if (be.getLabel().equals(label)) {
 				return (T) be;
 			}
+			if(useDefault && be.isDefault()) {
+				defaultEnum = be;
+			}
 		}
-		return null;
+		return (T)defaultEnum;
 	}
 
     @SuppressWarnings("unchecked")
