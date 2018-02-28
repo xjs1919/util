@@ -27,7 +27,7 @@ public class EnumFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <V, T extends BaseEnum<V>> T getByValue(Class<T> clazz, V value, boolean useDefault) {
+	public static <V, T extends BaseEnum<V>> T getByValue(Class<T> clazz, V value, boolean useDefaultOnMiss) {
 		init(clazz);
 		BaseEnum<V> defaultEnum = null;
 		Set<BaseEnum<V>> list = map.get(clazz);
@@ -35,7 +35,7 @@ public class EnumFactory {
 			if (be.getValue().equals(value)) {
 				return (T) be;
 			}
-			if(useDefault && be.isDefault()) {
+			if(useDefaultOnMiss && be.isDefault()) {
 				defaultEnum = be;
 			}
 		}
@@ -47,7 +47,7 @@ public class EnumFactory {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static <T extends BaseEnum<V>, V> T getByLabel(Class<T> clazz, String label, boolean useDefault) {
+	public static <T extends BaseEnum<V>, V> T getByLabel(Class<T> clazz, String label, boolean useDefaultOnMiss) {
 		init(clazz);
 		BaseEnum<V> defaultEnum = null;
 		Set<BaseEnum<V>> list = map.get(clazz);
@@ -55,7 +55,7 @@ public class EnumFactory {
 			if (be.getLabel().equals(label)) {
 				return (T) be;
 			}
-			if(useDefault && be.isDefault()) {
+			if(useDefaultOnMiss && be.isDefault()) {
 				defaultEnum = be;
 			}
 		}
