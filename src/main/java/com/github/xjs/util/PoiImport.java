@@ -13,8 +13,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.xjs.util.PoiUtil.FieldInfo;
+
 
 /**
  * @author xujs@inspur.com
@@ -22,6 +25,8 @@ import com.github.xjs.util.PoiUtil.FieldInfo;
  * @date 2017年8月16日 下午4:44:21
  */
 public class PoiImport {
+	
+	private static Logger log = LoggerFactory.getLogger(PoiImport.class);
 	
 	public static <T> List<T> readExcel(String filename, byte[] bytes, Class<T> clazz, int sheetIndex, boolean skipFirst) throws IOException{  
 		List<String[]> arrList  = readExcel(filename, bytes, sheetIndex, skipFirst);
@@ -70,7 +75,10 @@ public class PoiImport {
             int firstCellNum = row.getFirstCellNum();
             //获得当前行的列数
 			int cellNums = row.getPhysicalNumberOfCells();
-			String[] cells = new String[cellNums];
+			if(firstCellNum < 0 || cellNums <= 0){
+				continue;
+			}
+			String[] cells = new String[firstCellNum+cellNums];
             //循环当前行  
             for(int cellNum = firstCellNum; cellNum < firstCellNum+cellNums;cellNum++){  
                 Cell cell = row.getCell(cellNum);  
@@ -78,7 +86,6 @@ public class PoiImport {
             }  
             list.add(cells);  
         }  
-        workbook.close();  
         return list;  
     } 
     
@@ -162,7 +169,7 @@ public class PoiImport {
             	throw new RuntimeException("文件后缀名不合法");
             }
         } catch (IOException e) {  
-            LogUtil.info(()->e.getMessage());  
+            log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }  
     }  
