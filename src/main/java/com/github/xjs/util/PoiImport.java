@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.POIXMLException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -49,7 +51,22 @@ public class PoiImport {
 	
     public static List<String[]> readExcel(String filename, byte[] bytes, int sheetIndex, boolean skipFirst) throws IOException{  
         //获得Workbook工作薄对象  
-        Workbook workbook = getWorkBook(bytes, filename);  
+    	Workbook workbook = null;
+    	try {
+    		workbook = getWorkBook(bytes, filename);  
+    	}catch(Exception exception) {//如果人为修改了后缀名
+    		String realFileName = filename;
+    		if(exception instanceof OfficeXmlFileException) {//2007改为了2003
+    			realFileName = filename + "x";
+    		}else if(exception instanceof POIXMLException) {//2003改为了2007
+    			realFileName = filename.substring(0, filename.length()-1);
+    		}else {
+    			throw new RuntimeException("文件解析异常", exception);
+    		}
+    		if(!filename.equals(realFileName)) {
+        		workbook = getWorkBook(bytes, realFileName);
+    		}
+    	}
         //创建返回对象，把每行中的值作为一个数组，所有行作为一个集合返回  
         List<String[]> list = new ArrayList<String[]>();  
         //获得sheet工作表  
@@ -158,6 +175,7 @@ public class PoiImport {
 
     private static Workbook getWorkBook(byte[] bytes, String fileName) {  
         try {  
+        	fileName = fileName.toLowerCase();
             //根据文件后缀名不同(xls和xlsx)获得不同的Workbook实现类对象  
             if(fileName.endsWith(".xls")){  
                 //2003  
