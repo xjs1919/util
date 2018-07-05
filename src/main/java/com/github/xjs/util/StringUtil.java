@@ -23,8 +23,8 @@ public class StringUtil {
 	 * 去掉首尾的空格，包括全角空格
 	 * */
 	public static String trimSpace(String src){
-		if(isEmpty(src)){
-			return src;
+		if(src == null) {
+			return null;
 		}
 		return src.replaceAll("^[　\\s]+", "").replaceAll("[　\\s]+$", "");
 	}
