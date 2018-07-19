@@ -157,6 +157,32 @@ public class DateUtil {
         return cal.getTime();  
 	}
 	
+	/**
+	 * 把日期字符串标准化成yyyyMMdd格式，比如：<br/>
+	 * 2018年12月12日上午8点10分<br/>
+	 * 2018/12/12 上午 8点10分<br/>
+	 * 2018-12-12 上午 8点10分<br/>
+	 * 2018-12-12 8点10分<br/>
+	 * 2018-12-12<br/>
+	 * */
+	public static String formalizeToYMD(String src) {
+		if(src == null || src.length() <= 0) {
+			return null;
+		}
+		src = src.replaceAll("[年月日号]", "-");
+		src = src.replace("/", "-");
+		src = src.replaceAll("([\\d\\-]*).*", "$1");
+		String arr[] = src.split("\\-");
+		StringBuilder sb = new StringBuilder();
+		for(String s : arr) {
+			if(s.length() < 2) {
+				sb.append("0");
+			}
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 		System.out.println(format(addMinute(new Date(), -5),FORMAT_YMDHMS));
 		System.out.println(format(addHours(new Date(), -5),FORMAT_YMDHMS));
