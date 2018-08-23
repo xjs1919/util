@@ -3,9 +3,10 @@ package com.github.xjs.util.queue;
 public class WorkingService<T extends QueueAble> {  
     
     private WorkingQueue<T> workingQueue;  
-  
+    
+
     public WorkingService() {  
-        workingQueue = new WorkingQueue<T>();  
+        this.workingQueue = new WorkingQueue<T>();  
     }  
   
     public void start() {  
@@ -13,7 +14,11 @@ public class WorkingService<T extends QueueAble> {
     }  
   
     public void execute(final T t, Callback<T> callback ) {  
-        workingQueue.execute(t, callback);  
+        this.execute(t, callback, true);
+    }  
+    
+    public void execute(final T t, Callback<T> callback, boolean callbackExecuteParallel) {  
+        workingQueue.execute(t, callback, callbackExecuteParallel);  
     }  
   
     public void stop() {  

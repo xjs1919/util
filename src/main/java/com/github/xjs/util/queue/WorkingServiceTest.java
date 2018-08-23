@@ -23,12 +23,7 @@ public class WorkingServiceTest {
 		WorkingService<PushRequest> ws = new WorkingService<PushRequest>();
 		ws.start();
 		for(int i=0;i<10;i++){
-			ws.execute(new PushRequest(i, "this is a message"), new Callback<PushRequest>(){
-				@Override
-				public void callback(PushRequest request) {
-					System.out.println("handle message:"+request.getId());
-				}
-			});
+			ws.execute(new PushRequest(i, "this is a message"), (request)->{System.out.println("handle message:"+request.getId());}, true);
 		}
 		System.out.println("over");
 		System.in.read();

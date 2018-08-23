@@ -37,13 +37,14 @@ public class WorkingQueue<T extends QueueAble> {
 				while (shouldContinue) {
 					try {
 						CallbackQueueAble<T> callableRequest = queue.take();
-						ThreadPoolUtil.execute(new Runnable(){
-							public void run(){
-								T baseRequest = callableRequest.getQueueAble();
-								Callback<T> callback = callableRequest.getCallback();
-								callback.callback(baseRequest);
-							}
-						});
+						T baseRequest = callableRequest.getQueueAble();
+						Callback<T> callback = callableRequest.getCallback();
+						boolean isCallbackExecuteParallel = callableRequest.isCallbackExecuteParallel();
+						if(isCallbackExecuteParallel) {
+							ThreadPoolUtil.execute(()->{callback.callback(baseRequest);});
+						}else {
+							callback.callback(baseRequest);
+						}
 					} catch (Exception e) {
 						LogUtil.error(WorkingQueue.class, ()->"Unexpected message caught... Shouldn't be here", ()->e);
 					}
@@ -59,10 +60,10 @@ public class WorkingQueue<T extends QueueAble> {
 		thread.interrupt();
 	}
 
-	public void execute(T request, Callback<T> callback) {
+	public void execute(T request, Callback<T> callback, boolean callbackExecuteParallel) {
 		if (!started.get()) {
 			start();
 		}
-		queue.add(new CallbackQueueAble<T>(request, callback));
+		queue.add(new CallbackQueueAble<T>(request, callback, callbackExecuteParallel));
 	}
 }
