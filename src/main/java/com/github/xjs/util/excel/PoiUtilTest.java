@@ -15,7 +15,7 @@ import com.github.xjs.util.IOUtil;
  *
  * @date 2018年8月23日 下午1:48:42<br/>
  */
-public class PoiTest {
+public class PoiUtilTest {
 	public static class User{//不用遵守javabean规范
     	@FiledOrder(0)
     	private int id;
