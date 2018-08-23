@@ -19,21 +19,18 @@ public class WorkingServiceTest {
 		}
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		WorkingService<PushRequest> ws = new WorkingService<PushRequest>();
 		ws.start();
 		for(int i=0;i<10;i++){
 			ws.execute(new PushRequest(i, "this is a message"), new Callback<PushRequest>(){
 				@Override
 				public void callback(PushRequest request) {
-					try{
-						Thread.sleep(1000);
-					}catch(Exception e){
-					}
 					System.out.println("handle message:"+request.getId());
 				}
 			});
 		}
 		System.out.println("over");
+		System.in.read();
 	}
 }
