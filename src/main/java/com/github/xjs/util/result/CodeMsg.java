@@ -1,4 +1,4 @@
-package com.github.xjs.util.response;
+package com.github.xjs.util.result;
 
 /**
  * @author xujs@inspur.com

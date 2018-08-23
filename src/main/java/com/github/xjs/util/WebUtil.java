@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.github.xjs.util.response.ICodeMsg;
-import com.github.xjs.util.response.Response;
+import com.github.xjs.util.result.ICodeMsg;
+import com.github.xjs.util.result.Result;
 
 /**
  * @author 605162215@qq.com
@@ -52,14 +52,14 @@ public class WebUtil {
 		if(codeMsg == null){
 			return;
 		}
-		renderJson(response, Response.error(codeMsg));
+		renderJson(response, Result.error(codeMsg));
 	}
 	
 	public static<T> void renderJson(HttpServletResponse response, T t){
-		renderJson(response, Response.success(t));
+		renderJson(response, Result.success(t));
 	}
 	
-	private static <T> void renderJson(HttpServletResponse response, Response<T> data){
+	private static <T> void renderJson(HttpServletResponse response, Result<T> data){
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		try{

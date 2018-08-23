@@ -1,4 +1,4 @@
-package com.github.xjs.util.response;
+package com.github.xjs.util.result;
 
 public interface ICodeMsg {
 	public static final int SUCCESS_CODE = 0;

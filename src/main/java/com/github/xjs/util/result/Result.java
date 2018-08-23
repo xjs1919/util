@@ -1,21 +1,21 @@
-package com.github.xjs.util.response;
+package com.github.xjs.util.result;
 
-public class Response<T> {
+public class Result<T> {
 	private int errcode;
 	private String errmsg;
 	private T data;
 
-	public Response(){
+	public Result(){
 		this((T)null);
 	}
 	
-	public Response(T data){//正常
+	public Result(T data){//正常
 		this.errcode = ICodeMsg.SUCCESS_CODE;
 		this.errmsg = ICodeMsg.SUCCESS_MSG;
 		this.data = data;
 	}
 	
-	public Response(ICodeMsg codeMsg){//异常
+	public Result(ICodeMsg codeMsg){//异常
 		this.errcode = codeMsg.getErrcode();
 		this.errmsg = codeMsg.getErrmsg();
 	}
@@ -23,28 +23,28 @@ public class Response<T> {
 	/**
 	 * 正常返回
 	 * */
-	public static <T> Response<T> success(T t){
-		return new Response<T>(t);
+	public static <T> Result<T> success(T t){
+		return new Result<T>(t);
 	}
 	
 	/**
 	 * 异常返回
 	 * */
-	public static <T> Response<T> error(ICodeMsg codeMsg){
-		return new Response<T>(codeMsg);
+	public static <T> Result<T> error(ICodeMsg codeMsg){
+		return new Result<T>(codeMsg);
 	}
 	
 	/**
 	 * 异常返回
 	 * */
-	public static <T> Response<T> error(Response<?> response){
-		return new Response<T>(response.getErrcode(), response.getErrmsg());
+	public static <T> Result<T> error(Result<?> response){
+		return new Result<T>(response.getErrcode(), response.getErrmsg());
 	}
 	
 	/**
 	 * 异常，不让外部使用
 	 * */
-	private Response(int errcode, String errmsg){
+	private Result(int errcode, String errmsg){
 		this.errcode = errcode;
 		this.errmsg = errmsg;
 	}
