@@ -1,4 +1,4 @@
-package com.github.xjs.util;
+package com.github.xjs.util.excel;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.xjs.util.PoiUtil.FieldInfo;
+import com.github.xjs.util.DateUtil;
 
 
 /**

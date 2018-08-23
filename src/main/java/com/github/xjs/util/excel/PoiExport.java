@@ -1,8 +1,7 @@
-package com.github.xjs.util;
+package com.github.xjs.util.excel;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +11,6 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-
-import com.github.xjs.util.PoiUtil.FieldInfo;
-import com.github.xjs.util.PoiUtil.FieldNameSerializer;
-import com.github.xjs.util.PoiUtil.FieldSerializer;
-import com.github.xjs.util.PoiUtil.FieldTypeSerializer;
 
 /**
  * @author xujs@inspur.com
@@ -134,18 +128,4 @@ public class PoiExport {
         }
         return null;
     }
-
-    public static class DateSerializer<T> extends FieldTypeSerializer<T, Date> {
-        public DateSerializer() {
-			super(Date.class);
-		}
-        @Override
-        public String serialize(T bean, Date object) {
-            if(object == null){
-                return "";
-            }
-            return DateUtil.format(object, DateUtil.FORMAT_YMDHMS);
-        }
-    }
-
 }
