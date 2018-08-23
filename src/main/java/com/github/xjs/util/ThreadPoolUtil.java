@@ -90,6 +90,14 @@ public class ThreadPoolUtil {
 			public Void call(User user) {
 				System.out.println("1"+user);
 				System.out.println("1"+UserProvider.getUser());
+				ThreadPoolUtil.execute(new ParamCallable<Void, User>(UserProvider::getUser, UserProvider::setUser) {
+					@Override
+					public Void call(User user) {
+						System.out.println("3"+user);
+						System.out.println("3"+UserProvider.getUser());
+						return null;
+					}
+				});
 				return null;
 			}
 		});
