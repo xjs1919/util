@@ -1,6 +1,6 @@
 package com.github.xjs.util.queue;
 
-public class WorkingService<T extends BaseRequest> {  
+public class WorkingService<T extends QueueAble> {  
     
     private WorkingQueue<T> workingQueue;  
   
@@ -12,9 +12,8 @@ public class WorkingService<T extends BaseRequest> {
         workingQueue.start();  
     }  
   
-    public void execute(final T t, LazyExecutable<T> callback ) {  
-        t.setLazyExecutor(callback);  
-        workingQueue.execute(t);  
+    public void execute(final T t, Callback<T> callback ) {  
+        workingQueue.execute(t, callback);  
     }  
   
     public void stop() {  

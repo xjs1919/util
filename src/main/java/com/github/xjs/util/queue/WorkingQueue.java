@@ -9,9 +9,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.github.xjs.util.LogUtil;
 import com.github.xjs.util.ThreadPoolUtil;
 
-public class WorkingQueue<T extends BaseRequest> {
+public class WorkingQueue<T extends QueueAble> {
 
-	private BlockingQueue<T> queue;
+	private BlockingQueue<CallbackQueueAble<T>> queue;
 	private final ThreadFactory threadFactory;
 	private Thread thread;
 	private AtomicBoolean started = new AtomicBoolean(false);
@@ -22,28 +22,26 @@ public class WorkingQueue<T extends BaseRequest> {
 	}
 
 	public WorkingQueue(final ThreadFactory tf) {
-		this.queue = new LinkedBlockingQueue<T>();
+		this.queue = new LinkedBlockingQueue<CallbackQueueAble<T>>();
 		this.threadFactory = tf == null ? Executors.defaultThreadFactory() : tf;
 		this.thread = null;
 	}
 
 	public void start() {
 		if (started.getAndSet(true)) {
-			// I prefer if we throw a runtime IllegalStateException here,
-			// but I want to maintain semantic backward compatibility.
-			// So it is returning immediately here
 			return;
 		}
 		shouldContinue = true;
 		thread = threadFactory.newThread(new Runnable() {
-			@SuppressWarnings("unchecked")
 			public void run() {
 				while (shouldContinue) {
 					try {
-						T req = queue.take();
+						CallbackQueueAble<T> callableRequest = queue.take();
 						ThreadPoolUtil.execute(new Runnable(){
 							public void run(){
-								req.getLazyExecutor().lazyExecute(req);
+								T baseRequest = callableRequest.getQueueAble();
+								Callback<T> callback = callableRequest.getCallback();
+								callback.callback(baseRequest);
 							}
 						});
 					} catch (Exception e) {
@@ -61,10 +59,10 @@ public class WorkingQueue<T extends BaseRequest> {
 		thread.interrupt();
 	}
 
-	public void execute(T request) {
+	public void execute(T request, Callback<T> callback) {
 		if (!started.get()) {
 			start();
 		}
-		queue.add(request);
+		queue.add(new CallbackQueueAble<T>(request, callback));
 	}
 }

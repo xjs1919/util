@@ -2,7 +2,7 @@ package com.github.xjs.util.queue;
 
 public class WorkingServiceTest {
 	
-	public static class PushRequest extends BaseRequest{
+	public static class PushRequest implements QueueAble{
 		private int id;
 		private String msg;
 		public PushRequest(){
@@ -23,9 +23,9 @@ public class WorkingServiceTest {
 		WorkingService<PushRequest> ws = new WorkingService<PushRequest>();
 		ws.start();
 		for(int i=0;i<10;i++){
-			ws.execute(new PushRequest(i, "this is a message"), new LazyExecutable<PushRequest>(){
+			ws.execute(new PushRequest(i, "this is a message"), new Callback<PushRequest>(){
 				@Override
-				public void lazyExecute(PushRequest request) {
+				public void callback(PushRequest request) {
 					try{
 						Thread.sleep(1000);
 					}catch(Exception e){
