@@ -14,7 +14,7 @@ public class WorkingService<T extends QueueAble> {
     }  
   
     public void execute(final T t, Callback<T> callback ) {  
-        this.execute(t, callback, true);
+        this.execute(t, callback, false);
     }  
     
     public void execute(final T t, Callback<T> callback, boolean callbackExecuteParallel) {  
