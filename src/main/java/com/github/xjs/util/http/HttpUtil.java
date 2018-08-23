@@ -1,4 +1,4 @@
-package com.github.xjs.util;
+package com.github.xjs.util.http;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,6 +9,9 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.xjs.util.ExceptionUtil;
+import com.github.xjs.util.IOUtil;
+import com.github.xjs.util.StringUtil;
 
 /**
  * @author 605162215@qq.com
@@ -16,7 +19,8 @@ import com.alibaba.fastjson.JSONObject;
  * @date 2018年7月5日 上午10:55:06<br/>
  */
 public class HttpUtil {
-public static final int TIME_OUT = 10000;
+	
+	public static final int TIME_OUT = 10000;
 	
 	public static <T> HttpResponse<T> get(String urlstr, Class<T> clazz){
 		return get(urlstr,null, clazz);
@@ -28,7 +32,7 @@ public static final int TIME_OUT = 10000;
 	
 	public static <T> HttpResponse<T> get(String urlstr, String contentType, Class<T> clazz) {
 		InputStream inputStream = null;
-		HttpResponse<T> HttpResponse = new HttpResponse<T>();
+		HttpResponse<T> httpResponse = new HttpResponse<T>();
 		try{
 			URL localURL = new URL(urlstr);
 			HttpURLConnection conn = (HttpURLConnection) localURL.openConnection();
@@ -41,14 +45,15 @@ public static final int TIME_OUT = 10000;
 			}
 			conn.setRequestProperty("Cookie", CookieHolder.getAllCookies());
 			conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:40.0) Gecko/20100101 Firefox/40.0");
-			HttpResponse.setStatusCode(conn.getResponseCode());
+			int responseCode = conn.getResponseCode();
+			httpResponse.setStatusCode(responseCode);
 			CookieHolder.parseResponseCookies(conn.getHeaderFields());
-			if (conn.getResponseCode() == 200) {
+			if (responseCode == 200) {
 				inputStream = conn.getInputStream();
 				byte[] res = IOUtil.readInputStream(inputStream);
 				T t = convert(res, clazz);
-				HttpResponse.setContent(t);
-			}else if(conn.getResponseCode() == 302){
+				httpResponse.setContent(t);
+			}else if(responseCode == 302){
 				String location = conn.getHeaderField("location");
 				if(!StringUtil.isEmpty(location)){
 					return get(location, contentType, clazz);
@@ -59,7 +64,7 @@ public static final int TIME_OUT = 10000;
 		}finally{
 			IOUtil.closeQuietly(inputStream);
 		}
-		return HttpResponse;
+		return httpResponse;
 	}
 	
 	public static <T> HttpResponse<T> post(String urlstr, String parameterData,Class<T> clazz) {
@@ -97,11 +102,10 @@ public static final int TIME_OUT = 10000;
             	  writer.write(parameterData.toString());
                   writer.flush();
             }
-          
-            HttpResponse.setStatusCode(conn.getResponseCode());
+            int responseCode = conn.getResponseCode();
+            HttpResponse.setStatusCode(responseCode);
             CookieHolder.parseResponseCookies(conn.getHeaderFields());
-            
-            if (conn.getResponseCode() == 200) {
+            if (responseCode == 200) {
             	in = conn.getInputStream();
                 byte[] res = IOUtil.readInputStream(in);
         		T t = convert(res, clazz);
@@ -133,12 +137,13 @@ public static final int TIME_OUT = 10000;
 	        	}
 	        }
 			conn.setInstanceFollowRedirects(false);
-			if(conn.getResponseCode() == 302){
+			int responseCode = conn.getResponseCode();
+			if(responseCode == 302){
 				String location = conn.getHeaderField("location");
 				HttpResponse.setStatusCode(302);
 				HttpResponse.setContent(location);
 			}else{
-				HttpResponse.setStatusCode(conn.getResponseCode());
+				HttpResponse.setStatusCode(responseCode);
 			}
 			CookieHolder.parseResponseCookies(conn.getHeaderFields());
 		}catch(Exception e){
@@ -177,13 +182,13 @@ public static final int TIME_OUT = 10000;
             	 writer.write(parameterData.toString()); 
                  writer.flush();
             }
-            
-            if (conn.getResponseCode() == 302) {
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 302) {
             	String location = conn.getHeaderField("location");
 				HttpResponse.setStatusCode(302);
 				HttpResponse.setContent(location);
             }else{
-            	HttpResponse.setStatusCode(conn.getResponseCode());
+            	HttpResponse.setStatusCode(responseCode);
             }
             CookieHolder.parseResponseCookies(conn.getHeaderFields());
             
@@ -216,30 +221,6 @@ public static final int TIME_OUT = 10000;
 			return (T)JSON.parseObject(StringUtil.toString(res));
 		}else{
 			return JSON.toJavaObject(JSON.parseObject(StringUtil.toString(res)), clazz);
-		}
-	}
-	
-	public static class HttpResponse<T>{
-		private int statusCode;
-		private String errMsg;
-		private T content;
-		public int getStatusCode() {
-			return statusCode;
-		}
-		public void setStatusCode(int statusCode) {
-			this.statusCode = statusCode;
-		}
-		public String getErrMsg() {
-			return errMsg;
-		}
-		public void setErrMsg(String errMsg) {
-			this.errMsg = errMsg;
-		}
-		public T getContent() {
-			return content;
-		}
-		public void setContent(T content) {
-			this.content = content;
 		}
 	}
 }
