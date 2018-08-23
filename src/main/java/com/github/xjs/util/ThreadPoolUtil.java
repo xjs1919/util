@@ -4,6 +4,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ThreadPoolUtil {
@@ -30,13 +31,16 @@ public class ThreadPoolUtil {
 	
 	public static abstract class ParamRunnable<T> implements Runnable{
 		private T param;
-		public ParamRunnable(Supplier<T> paramSupplier) {
+		private Consumer<T> paramConsumer;
+		public ParamRunnable(Supplier<T> paramSupplier, Consumer<T> paramConsumer) {
 			if(paramSupplier != null) {
 				this.param = paramSupplier.get();
 			}
+			this.paramConsumer = paramConsumer;
 		}
 		@Override
 		public void run() {
+			paramConsumer.accept(param);
 			run(param);
 		}
 		public abstract void run(T param);
@@ -44,13 +48,16 @@ public class ThreadPoolUtil {
 	
 	public static abstract class ParamCallable<R,P> implements Callable<R>{
 		private P param;
-		public ParamCallable(Supplier<P> paramSupplier) {
+		private Consumer<P> paramConsumer;
+		public ParamCallable(Supplier<P> paramSupplier,  Consumer<P> paramConsumer) {
 			if(paramSupplier != null) {
 				this.param = paramSupplier.get();
 			}
+			this.paramConsumer = paramConsumer;
 		}
 		@Override
 		public R call() {
+			paramConsumer.accept(param);
 			return call(param);
 		}
 		public abstract R call(P param);
@@ -77,11 +84,23 @@ public class ThreadPoolUtil {
 	}
 	public static void main(String[] args)throws Exception {
 		UserProvider.setUser(new User(1));
-		System.out.println(UserProvider.getUser());
-		ThreadPoolUtil.execute(new ParamRunnable<User>(UserProvider::getUser) {
+		System.out.println("1"+UserProvider.getUser());
+		ThreadPoolUtil.execute(new ParamCallable<Void,User>(UserProvider::getUser, UserProvider::setUser) {
 			@Override
-			public void run(User user) {
-				System.out.println(user);
+			public Void call(User user) {
+				System.out.println("1"+user);
+				System.out.println("1"+UserProvider.getUser());
+				return null;
+			}
+		});
+		UserProvider.setUser(new User(2));
+		System.out.println("2"+UserProvider.getUser());
+		ThreadPoolUtil.execute(new ParamCallable<Void, User>(UserProvider::getUser, UserProvider::setUser) {
+			@Override
+			public Void call(User user) {
+				System.out.println("2"+user);
+				System.out.println("2"+UserProvider.getUser());
+				return null;
 			}
 		});
 		System.in.read();
