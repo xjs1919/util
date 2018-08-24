@@ -6,7 +6,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
+/**
+ * 关于ThreadLocal参数传递问题可以参考：https://github.com/alibaba/transmittable-thread-local
+ * */
 public class ThreadPoolUtil {
 
 	private final ExecutorService executor;
