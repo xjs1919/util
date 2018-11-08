@@ -12,12 +12,8 @@ public class EnumFactoryTest {
 	    }  
 	}
 	//test
-	public static void main(String[] args) {
+	public static void main(String[] args)throws Exception {
 		MonthEnum monthEnum = EnumFactory.getByValue(MonthEnum.class, 1);
-		System.out.println(monthEnum);
-		monthEnum = EnumFactory.getByValue(MonthEnum.class, 4);
-		System.out.println(monthEnum);
-		monthEnum = EnumFactory.getByValue(MonthEnum.class, 4, true);
 		System.out.println(monthEnum);
 	}
 }

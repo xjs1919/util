@@ -12,12 +12,13 @@ public class EnumFactory {
 	@SuppressWarnings("rawtypes")
 	private static ConcurrentHashMap<Class, Set> map = new ConcurrentHashMap<Class, Set>();
 
+	@SuppressWarnings("unchecked")
 	public static <V, T extends BaseEnum<V>> void add(T t) {
-		@SuppressWarnings("unchecked")
 		Set<BaseEnum<V>> list = map.get(t.getClass());
 		if (list == null) {
 			list = new HashSet<BaseEnum<V>>();
 			map.putIfAbsent(t.getClass(), list);
+			list = map.get(t.getClass());
 		}
 		list.add(t);
 	}
@@ -74,7 +75,7 @@ public class EnumFactory {
         return null;
 	}
     
-    private static void init(Class<?> clazz){
+    private static synchronized void init(Class<?> clazz){
 		if(map.get(clazz) != null){
 			return;
 		}
