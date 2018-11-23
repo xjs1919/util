@@ -27,6 +27,7 @@ public class ZipUtil {
 				byte[] contents = memFile.getContent();
 				compressBytes(zos, parentPath, fileName, contents);
 			}
+			IOUtil.closeQuietly(zos);
 			return out.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -48,6 +49,7 @@ public class ZipUtil {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			zos = new ZipOutputStream(out);
 			startCompress(zos, parentPath, srcFile);
+			IOUtil.closeQuietly(zos);
 			return out.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
