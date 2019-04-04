@@ -192,19 +192,31 @@ public class PoiImport {
         }  
     }  
     
-    private static String getCellValue(Cell cell){  
+   private static String getCellValue(Cell cell){  
         String cellValue = "";  
         if(cell == null){  
             return cellValue;  
         }  
-        //把数字当成String来读，避免出现1读成1.0的情况  
-        if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){  
-            cell.setCellType(Cell.CELL_TYPE_STRING);  
-        }  
         //判断数据的类型  
-        switch (cell.getCellType()){  
+        switch (cell.getCellType()){ 
             case Cell.CELL_TYPE_NUMERIC: //数字  
-                cellValue = String.valueOf(cell.getNumericCellValue());  
+            	SimpleDateFormat sdf = null;
+            	short format = cell.getCellStyle().getDataFormat();
+            	 if (format == 14 || format == 31 || format == 57 || format == 58  
+                         || (176<=format && format<=178) || (182<=format && format<=196) 
+                         || (210<=format && format<=213) || (208==format ) ) { // 日期
+                     sdf = new SimpleDateFormat("yyyy-MM-dd");
+                     double value = cell.getNumericCellValue();
+                     Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value);
+                     cellValue = sdf.format(date);
+                 } else if (format == 20 || format == 32 || format==183 || (200<=format && format<=209) ) { // 时间
+                     sdf = new SimpleDateFormat("HH:mm");
+                     double value = cell.getNumericCellValue();
+                     Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value);
+                     cellValue = sdf.format(date);
+                 } else { // 不是日期格式
+                	 cellValue = String.valueOf(cell.getNumericCellValue());
+                 }
                 break;  
             case Cell.CELL_TYPE_STRING: //字符串  
                 cellValue = String.valueOf(cell.getStringCellValue());  
