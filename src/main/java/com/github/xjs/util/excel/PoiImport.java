@@ -3,6 +3,7 @@ package com.github.xjs.util.excel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,6 +30,32 @@ import com.github.xjs.util.DateUtil;
 public class PoiImport {
 	
 	private static Logger log = LoggerFactory.getLogger(PoiImport.class);
+	
+	public static <T> List<T> readExcel(String filename, byte[] bytes, Class<T> clazz, int sheetIndex, RowStarter starter) throws IOException{  
+		List<String[]> arrList  = readExcel(filename, bytes, sheetIndex, false);
+		if(arrList == null || arrList.size() <= 0) {
+			return null;
+		}
+		int startIdx = 0;
+		String[] prevRowItems = null;
+		for(int i=0;i<arrList.size();i++) {
+			String[] curRowItems = arrList.get(i);
+			if(starter.isStartRow(prevRowItems, curRowItems)) {
+				startIdx = i;
+				break;
+			}
+			prevRowItems = curRowItems;
+		}
+		List<T> list = new ArrayList<T>(arrList.size()-startIdx);
+		for(int i=startIdx; i<arrList.size();i++) {
+			String arr[] = arrList.get(i);
+			T t = stringArrToBean(arr, clazz);
+			if(t != null) {
+				list.add(t);
+			}
+		}
+		return list;
+	}
 	
 	public static <T> List<T> readExcel(String filename, byte[] bytes, Class<T> clazz, int sheetIndex, boolean skipFirst) throws IOException{  
 		List<String[]> arrList  = readExcel(filename, bytes, sheetIndex, skipFirst);

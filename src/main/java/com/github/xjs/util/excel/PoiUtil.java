@@ -33,6 +33,14 @@ public class PoiUtil {
 		return PoiImport.readExcel(filename, bytes, clazz, sheetIndex, skipFirst);
 	}
 	
+	public static <T> List<T> readExcel(String filename, byte[] bytes,Class<T> clazz, RowStarter starter) throws IOException{  
+		return PoiImport.readExcel(filename, bytes, clazz, 0, starter);
+	}
+	
+	public static <T> List<T> readExcel(String filename, byte[] bytes,Class<T> clazz, int sheetIndex, RowStarter starter) throws IOException{  
+		return PoiImport.readExcel(filename, bytes, clazz, sheetIndex, starter);
+	}
+	
 	public static <T,V> byte[] writeExcel(List<T> datas) throws Exception{
 		return writeExcel((List<String>)null, datas, (List<FieldSerializer<T,V>>)null);
 	}
