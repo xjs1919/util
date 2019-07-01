@@ -136,10 +136,13 @@ public class PoiImport {
 			if(fieldType == String.class) {
 				filed.set(bean, fieldValue);
 			}else if(fieldType == int.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Integer.valueOf(fieldValue).intValue());
 			}else if(fieldType == byte.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Byte.valueOf(fieldValue).byteValue());
 			}else if(fieldType == long.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Long.valueOf(fieldValue).longValue());
 			}else if(fieldType == double.class) {
 				filed.set(bean, Double.valueOf(fieldValue).doubleValue());
@@ -150,10 +153,13 @@ public class PoiImport {
 					filed.set(bean, false);
 				}
 			}else if(fieldType == Integer.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Integer.valueOf(fieldValue));
 			}else if(fieldType == Byte.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Byte.valueOf(fieldValue));
 			}else if(fieldType == Long.class) {
+				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
 				filed.set(bean, Long.valueOf(fieldValue));
 			}else if(fieldType == Double.class) {
 				filed.set(bean, Double.valueOf(fieldValue));
