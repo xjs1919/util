@@ -90,14 +90,14 @@ public class PoiImport {
             }  
             //获得当前行的开始列  
             int firstCellNum = row.getFirstCellNum();
-            //获得当前行的列数
-			int cellNums = row.getPhysicalNumberOfCells();
-			if(firstCellNum < 0 || cellNums <= 0){
-				continue;
-			}
-			String[] cells = new String[firstCellNum+cellNums];
+            //获得当前行的结束列
+            int lastCellNum = row.getLastCellNum();
+	    if(firstCellNum < 0 || lastCellNum <= 0){
+	     	continue;
+	     }
+	     String[] cells = new String[lastCellNum-firstCellNum+1];
             //循环当前行  
-            for(int cellNum = firstCellNum; cellNum < firstCellNum+cellNums;cellNum++){  
+            for(int cellNum = firstCellNum; cellNum < lastCellNum;cellNum++){  
                 Cell cell = row.getCell(cellNum);  
                 cells[cellNum] = getCellValue(cell);  
             }  
