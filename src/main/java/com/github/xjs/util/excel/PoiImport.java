@@ -92,7 +92,7 @@ public class PoiImport {
             int firstCellNum = row.getFirstCellNum();
             //获得当前行的结束列
             int lastCellNum = row.getLastCellNum();
-	    if(firstCellNum < 0 || lastCellNum <= 0){
+	    if(firstCellNum < 0 || lastCellNum < 0){
 	     	continue;
 	     }
 	     String[] cells = new String[lastCellNum-firstCellNum+1];
