@@ -69,11 +69,13 @@ public class PoiExport {
         // 产生表格体
         List<FieldInfo> fieldInfos = PoiUtil.getFiledInfos(dataSet.get(0).getClass());
         if(fieldInfos != null && fieldInfos.size() > 0) {
+        	int fieldCnt = getFieldCount(fieldInfos);
         	for (T t : dataSet) {
             	HSSFRow row = sheet.createRow(index++);
-            	for (int i = 0; i < fieldInfos.size(); i++) {
+            	for (int i = 0; i < fieldCnt; i++) {
                     HSSFCell cell = row.createCell(i);
-                    String value = getValue(t, fieldInfos.get(i).getFiled());
+                    FieldInfo fi = getFieldInfo(i, fieldInfos);
+                    String value = (fi==null?"":getValue(t, fi.getFiled()));
                     HSSFRichTextString richString = new HSSFRichTextString(value);
                     cell.setCellValue(richString);
                 }
@@ -86,7 +88,27 @@ public class PoiExport {
         return out.toByteArray();
     }
 
-    private String getValue(Object bean, Field field) throws Exception {
+	private FieldInfo getFieldInfo(int order, List<FieldInfo> fieldInfos) {
+		for(FieldInfo fi : fieldInfos) {
+			if(fi.getOrder() == order) {
+				return fi;
+			}
+		}
+		return null;
+	}
+
+	private int getFieldCount(List<FieldInfo> fieldInfos) {
+		int maxIdx = 0;
+		for(FieldInfo fi : fieldInfos) {
+			int order = fi.getOrder();
+			if(order > maxIdx ) {
+				maxIdx = order;
+			}
+		}
+		return maxIdx+1;
+	}
+
+	private String getValue(Object bean, Field field) throws Exception {
         Object value = field.get(bean);
         if(value != null) {
         	return toString(bean,value,field.getName());

@@ -119,10 +119,10 @@ public class PoiImport {
             int firstCellNum = row.getFirstCellNum();
             //获得当前行的结束列
             int lastCellNum = row.getLastCellNum();
-	    if(firstCellNum < 0 || lastCellNum < 0){
-	     	continue;
-	     }
-	     String[] cells = new String[lastCellNum-firstCellNum+1];
+			if(firstCellNum < 0 || lastCellNum < 0){
+				continue;
+			}
+			String[] cells = new String[lastCellNum-firstCellNum+1];
             //循环当前行  
             for(int cellNum = firstCellNum; cellNum < lastCellNum;cellNum++){  
                 Cell cell = row.getCell(cellNum);  
@@ -163,13 +163,13 @@ public class PoiImport {
 			if(fieldType == String.class) {
 				filed.set(bean, fieldValue);
 			}else if(fieldType == int.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Integer.valueOf(fieldValue).intValue());
 			}else if(fieldType == byte.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Byte.valueOf(fieldValue).byteValue());
 			}else if(fieldType == long.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Long.valueOf(fieldValue).longValue());
 			}else if(fieldType == double.class) {
 				filed.set(bean, Double.valueOf(fieldValue).doubleValue());
@@ -180,13 +180,13 @@ public class PoiImport {
 					filed.set(bean, false);
 				}
 			}else if(fieldType == Integer.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Integer.valueOf(fieldValue));
 			}else if(fieldType == Byte.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Byte.valueOf(fieldValue));
 			}else if(fieldType == Long.class) {
-				fieldValue = fieldValue.replaceAll("\\.\\d+", "");
+				fieldValue = fieldValue.replaceAll("\\.\\d+$", "");
 				filed.set(bean, Long.valueOf(fieldValue));
 			}else if(fieldType == Double.class) {
 				filed.set(bean, Double.valueOf(fieldValue));
@@ -249,6 +249,7 @@ public class PoiImport {
                      cellValue = sdf.format(date);
                  } else { // 不是日期格式
                 	 cellValue = String.valueOf(cell.getNumericCellValue());
+                	 cellValue = cellValue.replaceAll("\\.0+", "");
                  }
                 break;  
             case Cell.CELL_TYPE_STRING: //字符串  
