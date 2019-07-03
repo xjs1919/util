@@ -122,7 +122,7 @@ public class PoiImport {
 			if(firstCellNum < 0 || lastCellNum < 0){
 				continue;
 			}
-			String[] cells = new String[lastCellNum-firstCellNum+1];
+			String[] cells = new String[lastCellNum];
             //循环当前行  
             for(int cellNum = firstCellNum; cellNum < lastCellNum;cellNum++){  
                 Cell cell = row.getCell(cellNum);  
