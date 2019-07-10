@@ -10,10 +10,12 @@ import java.lang.reflect.Field;
 public class FieldInfo{
     private Field filed;
     private int order;
-    public FieldInfo(Field filed, int order) {
+    private String name;
+    public FieldInfo(Field filed, int order, String name) {
         super();
         this.filed = filed;
         this.order = order;
+        this.name = name;
     }
     public Field getFiled() {
         return filed;
@@ -27,4 +29,10 @@ public class FieldInfo{
     public void setOrder(int order) {
         this.order = order;
     }
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 }

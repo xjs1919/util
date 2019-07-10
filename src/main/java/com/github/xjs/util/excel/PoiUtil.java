@@ -45,6 +45,11 @@ public class PoiUtil {
 		return writeExcel((List<String>)null, datas, (List<FieldSerializer<T,V>>)null);
 	}
 	
+	@SafeVarargs
+	public static <T,V> byte[] writeExcel(List<T> datas, FieldSerializer<T,V>... serializers) throws Exception{
+		return writeExcel((List<String>)null, datas, serializers);
+	}
+	
 	public static <T,V> byte[] writeExcel(String[] heads, List<T> datas) throws Exception{
 		return writeExcel(heads==null?(List<String>)null:Arrays.asList(heads), datas, (List<FieldSerializer<T,V>>)null);
 	}
@@ -130,7 +135,7 @@ public class PoiUtil {
                 if(orderAnno == null) {
                 	continue;
                 }
-                fieldInfos.add(new FieldInfo(field, orderAnno.value()));
+                fieldInfos.add(new FieldInfo(field, orderAnno.value(), orderAnno.name()));
             }
             targetClass = targetClass.getSuperclass();
         } while (targetClass != null && targetClass != Object.class);

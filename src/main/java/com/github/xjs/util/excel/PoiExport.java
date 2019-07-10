@@ -57,7 +57,19 @@ public class PoiExport {
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet("sheet1");
         int index = 0;
+        List<FieldInfo> fieldInfos = PoiUtil.getFiledInfos(dataSet.get(0).getClass());
+        int fieldCnt = getFieldCount(fieldInfos);
         // 产生表格标题行
+        if(headers == null || headers.size() <= 0) {//注解生成header
+        	HSSFRow row = sheet.createRow(index++);
+        	for (int i = 0; i < fieldCnt; i++) {
+                HSSFCell cell = row.createCell(i);
+                FieldInfo fi = getFieldInfo(i, fieldInfos);
+                String value = (fi==null?"":fi.getName());
+                HSSFRichTextString richString = new HSSFRichTextString(value);
+                cell.setCellValue(richString);
+            }
+        }
         if(headers != null && headers.size() > 0) {
         	HSSFRow row = sheet.createRow(index++);
             for (int i = 0; i < headers.size(); i++) {
@@ -67,9 +79,7 @@ public class PoiExport {
             }
         }
         // 产生表格体
-        List<FieldInfo> fieldInfos = PoiUtil.getFiledInfos(dataSet.get(0).getClass());
         if(fieldInfos != null && fieldInfos.size() > 0) {
-        	int fieldCnt = getFieldCount(fieldInfos);
         	for (T t : dataSet) {
             	HSSFRow row = sheet.createRow(index++);
             	for (int i = 0; i < fieldCnt; i++) {

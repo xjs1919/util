@@ -10,8 +10,9 @@ import java.lang.annotation.Target;
  *
  * @date 2018年8月23日 下午1:44:13<br/>
  */
-@Retention(RetentionPolicy.RUNTIME)  
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)  
 public @interface FiledOrder{
 	public int value();//从0开始
+	public String name() default "";
 }

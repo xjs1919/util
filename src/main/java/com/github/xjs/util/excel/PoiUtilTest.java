@@ -17,13 +17,13 @@ import com.github.xjs.util.IOUtil;
  */
 public class PoiUtilTest {
 	public static class User{//不用遵守javabean规范
-    	@FiledOrder(0)
+    	@FiledOrder(value=0,name="编号")
     	private int id;
-    	@FiledOrder(1)
+    	@FiledOrder(value=1,name="姓名")
     	private String name;
-    	@FiledOrder(2)
+    	@FiledOrder(value=2,name="生日")
     	private Date birthDay;
-    	@FiledOrder(3)
+    	@FiledOrder(value=3,name="性别")
     	private boolean isMale;
     	public User() {}
     	public User(int id, String name, Date birthDay, boolean isMale) {
@@ -49,13 +49,13 @@ public class PoiUtilTest {
 			@Override
 			public String serialize(User bean, Boolean fieldValue) {
 				if(fieldValue) {
-					return "是";
+					return "男";
 				}else {
-					return "否";
+					return "女";
 				}
 			}
     	};
-    	byte[] bytes = PoiUtil.writeExcel(new String[] {"id","姓名","生日","是否男性"}, users, serializer);
+    	byte[] bytes = PoiUtil.writeExcel(users, serializer);
     	OutputStream out = new FileOutputStream(file);
     	out.write(bytes);
     	out.close();
