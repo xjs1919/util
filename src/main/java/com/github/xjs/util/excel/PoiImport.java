@@ -3,6 +3,7 @@ package com.github.xjs.util.excel;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -249,7 +250,7 @@ public class PoiImport {
                      cellValue = sdf.format(date);
                  } else { // 不是日期格式
                 	 cellValue = String.valueOf(cell.getNumericCellValue());
-                	 cellValue = cellValue.replaceAll("\\.0+", "");
+                	 cellValue = new BigDecimal(cellValue).stripTrailingZeros().toPlainString();
                  }
                 break;  
             case Cell.CELL_TYPE_STRING: //字符串  
