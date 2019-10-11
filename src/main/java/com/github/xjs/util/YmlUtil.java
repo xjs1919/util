@@ -1,8 +1,6 @@
-package com.github.xjs.util.conf;
+package com.github.xjs.util;
 
 
-import com.github.xjs.util.IOUtil;
-import com.github.xjs.util.StringUtil;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayInputStream;
