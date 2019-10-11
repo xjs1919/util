@@ -5,6 +5,7 @@ import com.github.xjs.util.IOUtil;
 import com.github.xjs.util.StringUtil;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,11 +17,10 @@ import java.util.Map;
  * @Author xujs@mamcharge.com
  * @Date 2019/9/6 15:16
  **/
-class ConfYml implements ConfAble{
+public class YmlUtil {
 
-    private Map<String,String> resultMap = new HashMap<String,String>();
+    private Map<String,Object> resultMap = new HashMap<String,Object>();
 
-    @Override
     public void init(InputStream inputStream){
         Yaml yaml = new Yaml();
         Iterator<Object> result = yaml.loadAll(inputStream).iterator();
@@ -31,8 +31,7 @@ class ConfYml implements ConfAble{
         IOUtil.closeQuietly(inputStream);
     }
 
-    @Override
-    public String get(String key) {
+    public Object get(String key) {
         return resultMap.get(key);
     }
 
@@ -47,15 +46,33 @@ class ConfYml implements ConfAble{
                 if(value instanceof LinkedHashMap){
                     iteratorYml((Map)value, key.toString());
                 }else {
-                    resultMap.put(key.toString(), value==null?"":value.toString());
+                    resultMap.put(key.toString(), value);
                 }
             }else{//追加parent key
                 if(value instanceof LinkedHashMap){
                     iteratorYml((Map)value, parentKey+"."+ key.toString());
                 }else{
-                    resultMap.put(parentKey+"."+key.toString(), value==null?"":value.toString());
+                    resultMap.put(parentKey+"."+key.toString(), value);
                 }
             }
         }
+    }
+
+    public static void main(String[] args)throws Exception {
+        String ymlstr = "key:\n" +
+                "  - a\n" +
+                "  - b\n" +
+                "  - c\n" +
+                "key2: hello\n" +
+                "key3: {'user':'xjs', 'pass':'123456'}";
+        YmlUtil yml = new YmlUtil();
+        InputStream in = new ByteArrayInputStream(ymlstr.getBytes());
+        yml.init(in);
+        Object o1 = yml.get("key");
+        System.out.println(o1+","+o1.getClass().getName());
+        Object o2 = yml.get("key2");
+        System.out.println(o2);
+        Object o3 = yml.get("key3.user");
+        System.out.println(o3);
     }
 }
