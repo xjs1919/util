@@ -3,20 +3,12 @@
  */
 package com.github.xjs.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.github.xjs.util.filewriter.FileWriter;
 
 /**
  * @author 605162215@qq.com
@@ -130,5 +122,115 @@ public class IOUtil {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	/***
+	 * 获取文件的行数
+	 * */
+	public static int getFileRowCount(File file){
+		if(file == null || !file.exists()){
+			return 0;
+		}
+		try{
+			FileReader fileReader = new FileReader(file);
+			LineNumberReader lineNumberReader = new LineNumberReader(fileReader);
+			lineNumberReader.skip(Long.MAX_VALUE);
+			int lines = lineNumberReader.getLineNumber();
+			IOUtil.closeQuietly(fileReader, lineNumberReader);
+			return lines;
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}
+	}
+
+	/***
+	 * 把一个文件按照行数拆分多个子文件
+	 * */
+	public static synchronized File[] splitFile(File src, final int maxRowCount, final FileWriter.ElementProcessor rowProcessor){
+		File[] subFiles = null;
+		BufferedReader br = null;
+		InputStream in = null;
+		try{
+			String srcFileName = src.getName();
+			//先删除老的文件
+			File[] oldFiles = src.getParentFile().listFiles();
+			for(File oldFile : oldFiles){
+				String oldFileName = oldFile.getName();
+				if(oldFileName.indexOf(srcFileName) >= 0){
+					int underline = oldFileName.lastIndexOf("_");
+					if(underline <= 0){
+						continue;
+					}
+					String front = oldFileName.substring(0, underline);
+					if(srcFileName.equals(front)){
+						oldFile.delete();
+					}
+				}
+			}
+			//重新生成新的
+			List<FileWriter> fileWriters = new ArrayList<FileWriter>();
+			in = new FileInputStream(src);
+			br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+			String line = null;
+			int subFileRowCnt = 0;
+			int subFileIdx = 0;
+			while((line = br.readLine()) != null){
+				subFileRowCnt++;
+				FileWriter fileWriter = null;
+				File subFile = new File(src.getParent(), srcFileName+"_"+subFileIdx);
+				if(!subFile.exists()){
+					if(fileWriters.size()>0){
+						FileWriter lastFileWriter = fileWriters.get(fileWriters.size()-1);
+						if(lastFileWriter != null){
+							lastFileWriter.stop();
+						}
+					}
+					createNewSubFile(subFile);
+					fileWriter = createFileWriter(subFile, rowProcessor);
+					fileWriters.add(fileWriter);
+				}else{
+					fileWriter = fileWriters.get(fileWriters.size()-1);
+				}
+				fileWriter.write(line);
+				if(subFileRowCnt >= maxRowCount){
+					subFileIdx ++;
+					subFileRowCnt = 0;
+				}
+			}
+			fileWriters.get(fileWriters.size()-1).stop();
+			subFiles = new File[fileWriters.size()];
+			for(int i=0; i<subFiles.length; i++){
+				FileWriter fileWriter = fileWriters.get(i);
+				subFiles[i] = fileWriter.getFile();
+			}
+			return subFiles;
+		}catch(Exception e){
+			throw new RuntimeException(e);
+		}finally {
+			IOUtil.closeQuietly(in, br);
+		}
+	}
+
+	private static void createNewSubFile(File subFile) {
+		if(!subFile.exists()){
+			try{
+				subFile.createNewFile();
+			}catch(Exception e){
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private static FileWriter createFileWriter(File subFile, FileWriter.ElementProcessor processor) {
+		FileWriter fileWriter = new FileWriter(subFile, processor);
+		return fileWriter;
+	}
+
+	public static void main(String[] args) {
+		File[] files = splitFile(new File("d:\\log.txt"), 5, null);
+		for(File file : files){
+			System.out.println(file.getAbsolutePath());
+		}
+		System.out.println("over");
+	}
+
 }
