@@ -71,6 +71,19 @@ public class StringUtil {
 			return null;
 		}
 	}
+
+	public static byte[] toBytes(String src){
+		return toBytes(src, "UTF-8");
+	}
+
+	public static byte[] toBytes(String src, String encoding){
+		try{
+			return src.getBytes(encoding);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 	public static String urlEncode(String url){
 		try{
