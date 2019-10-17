@@ -25,7 +25,6 @@ public class HttpUtil {
     }
 
     public static String get(final String urlstr, Map<String, Object> params){
-        InputStream httpIn = null;
         String url = urlstr;
         try{
             url = appendParamsToUrl(urlstr, params);
@@ -33,8 +32,6 @@ public class HttpUtil {
             return parseResponse(urlstr, conn);
         }catch(Exception e){
             throw new RuntimeException(e);
-        }finally{
-            IOUtil.closeQuietly(httpIn);
         }
     }
 
@@ -62,7 +59,6 @@ public class HttpUtil {
     }
 
     public static String post(String urlstr, Object params, Map<String, Object>headers){
-        InputStream httpIn = null;
         OutputStream httpOut = null;
         try{
             HttpURLConnection conn = getConnection(urlstr, "post");
@@ -82,13 +78,12 @@ public class HttpUtil {
                 }else {
                     System.out.println("不支持的参数类型："+params.getClass().getName());
                 }
+                IOUtil.closeQuietly(httpOut);
             }
             //读取
             return parseResponse(urlstr, conn);
         }catch(Exception e){
             throw new RuntimeException(e);
-        }finally{
-            IOUtil.closeQuietly(httpIn, httpOut);
         }
     }
 
