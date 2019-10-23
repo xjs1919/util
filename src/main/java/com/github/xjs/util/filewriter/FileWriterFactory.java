@@ -18,13 +18,13 @@ public class FileWriterFactory {
 
     private static ConcurrentHashMap<String, FileWriter> FileWriterCache = new ConcurrentHashMap<String, FileWriter>();
 
-    public static FileWriter getFileWriter(File file, FileWriter.ElementProcessor extractor) {
+    public static FileWriter getFileWriter(File file, boolean append, FileWriter.ElementProcessor extractor) {
         String filePath = file.getAbsolutePath();
         FileWriter fw = FileWriterCache.get(filePath);
         if (fw != null) {
             return fw;
         }
-        fw = new FileWriter(file, extractor);
+        fw = new FileWriter(file, append, extractor);
         FileWriterCache.putIfAbsent(filePath, fw);
         return FileWriterCache.get(filePath);
     }
@@ -36,8 +36,8 @@ public class FileWriterFactory {
     }
 
     public static void main(String[] args) throws Exception {
-        FileWriter fw1 = FileWriterFactory.getFileWriter(new File("d:\\log1.txt"), null);
-        FileWriter fw2 = FileWriterFactory.getFileWriter(new File("d:\\log2.txt"), null);
+        FileWriter fw1 = FileWriterFactory.getFileWriter(new File("d:\\log1.txt"), false, null);
+        FileWriter fw2 = FileWriterFactory.getFileWriter(new File("d:\\log2.txt"), false, null);
         Thread[] ts = new Thread[10];
         CountDownLatch latch = new CountDownLatch(ts.length);
         for (int i = 0; i < ts.length; i++) {

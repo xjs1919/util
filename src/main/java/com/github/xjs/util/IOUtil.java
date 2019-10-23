@@ -221,7 +221,7 @@ public class IOUtil {
 	}
 
 	private static FileWriter createFileWriter(File subFile, FileWriter.ElementProcessor processor) {
-		FileWriter fileWriter = new FileWriter(subFile, processor);
+		FileWriter fileWriter = new FileWriter(subFile, false, processor);
 		return fileWriter;
 	}
 

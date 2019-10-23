@@ -103,6 +103,19 @@ public class StringUtil {
 		}
 	}
 
+	public static String formalizeClassName(String src){
+		if(src == null || src.length() <= 0){
+			return null;
+		}
+		src = src.substring(0).toUpperCase();
+		if(src.length() <= 1){
+			return src;
+		}else{
+			src = src.replaceAll("[_-]","_");
+			return underlineToCamel(src);
+		}
+	}
+
 	public static String underlineToCamel(String param) {
 		if (param == null || "".equals(param.trim())) {
 			return "";

@@ -25,14 +25,16 @@ public class FileWriter {
     private File file;
     private ElementProcessor processor;
     private Thread writeThread;
+    private boolean append;
 
     public interface ElementProcessor {
         String process(String element);
     }
 
-    public FileWriter(File file, ElementProcessor processor){
+    public FileWriter(File file, boolean append, ElementProcessor processor){
         this.file = file;
         this.processor = processor;
+        this.append = append;
         this.start();
     }
 
@@ -40,14 +42,16 @@ public class FileWriter {
         if(!start.compareAndSet(false, true)){
             return;
         }
-        if(file.exists()){
-            file.delete();
-        }
-        try{
-            file.createNewFile();
-        }catch(Exception e){
-            LOG.error(e.getMessage(), e);
-            throw new RuntimeException(e);
+        if(!append){
+            if(file.exists()){
+                file.delete();
+            }
+            try{
+                file.createNewFile();
+            }catch(Exception e){
+                LOG.error(e.getMessage(), e);
+                throw new RuntimeException(e);
+            }
         }
         writeThread = new Thread(new Runnable() {
             @Override
@@ -139,30 +143,10 @@ public class FileWriter {
         }
     }
 
-    public void main(String[] args) throws Exception{
-        FileWriter fw = new FileWriter(new File("d:\\log.txt"), null);
-        Thread[] ts = new Thread[10];
-        for(int i=0;i<10;i++){
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{Thread.sleep(1);}catch(Exception e){e.printStackTrace();}
-                    fw.write(Thread.currentThread().getName());
-                }
-            });
-            ts[i] = t;
-        }
-        Thread stop = new Thread(){
-            @Override
-          public void run(){
-                try{Thread.sleep(1);}catch(Exception e){e.printStackTrace();}
-                fw.stop();
-          }
-        };
-        for(int i=0;i<10;i++){
-            ts[i].start();
-        }
-        stop.start();
+    public static void main(String[] args) throws Exception{
+        FileWriter fw = new FileWriter(new File("d:\\log.txt"), true, null);
+        fw.write("hello");
+        fw.stop();
     }
 
 }
