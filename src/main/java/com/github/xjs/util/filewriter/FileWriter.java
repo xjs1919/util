@@ -12,7 +12,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * @Description
+ * 使用：<br/>
+ * (1) FileWriter fr = new FileWriter(...)<br/>
+ * (2) fr.start();<br/>
+ * (3) fr.stop();
+ * <p>
  * @Author xujs@mamcharge.com
  * @Date 2019/10/12 14:52
  **/
@@ -38,7 +42,6 @@ public class FileWriter {
         this.file = file;
         this.processor = processor;
         this.append = append;
-        this.start();
     }
 
     public void start(){

@@ -7,7 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @Description
  * @Author xujs@mamcharge.com
  * @Date 2019/10/12 14:52
  **/
@@ -41,7 +40,9 @@ public class FileWriterFactory {
         }
         fw = new FileWriter(file, append, extractor);
         FileWriterCache.putIfAbsent(filePath, fw);
-        return FileWriterCache.get(filePath);
+        fw = FileWriterCache.get(filePath);
+        fw.start();
+        return fw;
     }
 
     public static FileWriter getFileWriter(File file){
@@ -51,6 +52,21 @@ public class FileWriterFactory {
         return FileWriterCache.get(file.getAbsolutePath());
     }
 
+    public static void stop(File file){
+        if(file == null){
+            return;
+        }
+        FileWriter fileWriter = getFileWriter(file);
+        stop(fileWriter);
+    }
+
+    public static void stop(FileWriter fileWriter){
+        if(fileWriter == null){
+            return;
+        }
+        fileWriter.stop();
+    }
+
     public static void stop() {
         for (Map.Entry<String, FileWriter> entry : FileWriterCache.entrySet()) {
             entry.getValue().stop();
@@ -58,8 +74,8 @@ public class FileWriterFactory {
     }
 
     public static void main(String[] args) throws Exception {
-        FileWriter fw1 = FileWriterFactory.initFileWriter(new File("d:\\log1.txt"), false, null);
-        FileWriter fw2 = FileWriterFactory.initFileWriter(new File("d:\\log2.txt"), false, null);
+        FileWriter fw1 = FileWriterFactory.initFileWriter(new File("d:\\log1.txt"));
+        FileWriter fw2 = FileWriterFactory.initFileWriter(new File("d:\\log2.txt"));
         Thread[] ts = new Thread[10];
         CountDownLatch latch = new CountDownLatch(ts.length);
         for (int i = 0; i < ts.length; i++) {
