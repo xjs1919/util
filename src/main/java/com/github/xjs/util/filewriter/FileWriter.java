@@ -32,6 +32,9 @@ public class FileWriter {
     }
 
     public FileWriter(File file, boolean append, ElementProcessor processor){
+        if(file == null){
+            return;
+        }
         this.file = file;
         this.processor = processor;
         this.append = append;
@@ -39,6 +42,9 @@ public class FileWriter {
     }
 
     public void start(){
+        if(this.file == null){
+            return;
+        }
         if(!start.compareAndSet(false, true)){
             return;
         }
@@ -98,12 +104,19 @@ public class FileWriter {
     }
 
     public void stop(){
+        if(!start.get()){
+            return;
+        }
         start.set(false);
         writeThread.interrupt();
     }
 
     public File getFile(){
         return file;
+    }
+
+    public boolean appendAble(){
+        return this.append;
     }
 
     private void appendToFile(String line) {

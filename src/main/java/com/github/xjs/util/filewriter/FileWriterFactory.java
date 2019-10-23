@@ -18,7 +18,22 @@ public class FileWriterFactory {
 
     private static ConcurrentHashMap<String, FileWriter> FileWriterCache = new ConcurrentHashMap<String, FileWriter>();
 
-    public static FileWriter getFileWriter(File file, boolean append, FileWriter.ElementProcessor extractor) {
+    public static FileWriter initFileWriter(File file){
+        return initFileWriter(file, false, null);
+    }
+
+    public static FileWriter initFileWriter(File file, boolean append){
+        return initFileWriter(file, append, null);
+    }
+
+    public static FileWriter initFileWriter(File file, FileWriter.ElementProcessor extractor){
+        return initFileWriter(file, false, extractor);
+    }
+
+    public static FileWriter initFileWriter(File file, boolean append, FileWriter.ElementProcessor extractor) {
+        if(file == null){
+            return null;
+        }
         String filePath = file.getAbsolutePath();
         FileWriter fw = FileWriterCache.get(filePath);
         if (fw != null) {
@@ -29,6 +44,13 @@ public class FileWriterFactory {
         return FileWriterCache.get(filePath);
     }
 
+    public static FileWriter getFileWriter(File file){
+        if(file == null){
+            return null;
+        }
+        return FileWriterCache.get(file.getAbsolutePath());
+    }
+
     public static void stop() {
         for (Map.Entry<String, FileWriter> entry : FileWriterCache.entrySet()) {
             entry.getValue().stop();
@@ -36,8 +58,8 @@ public class FileWriterFactory {
     }
 
     public static void main(String[] args) throws Exception {
-        FileWriter fw1 = FileWriterFactory.getFileWriter(new File("d:\\log1.txt"), false, null);
-        FileWriter fw2 = FileWriterFactory.getFileWriter(new File("d:\\log2.txt"), false, null);
+        FileWriter fw1 = FileWriterFactory.initFileWriter(new File("d:\\log1.txt"), false, null);
+        FileWriter fw2 = FileWriterFactory.initFileWriter(new File("d:\\log2.txt"), false, null);
         Thread[] ts = new Thread[10];
         CountDownLatch latch = new CountDownLatch(ts.length);
         for (int i = 0; i < ts.length; i++) {
