@@ -1,11 +1,14 @@
 package com.github.xjs.util;
 
+import javax.net.ssl.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,10 +28,20 @@ public class HttpUtil {
     }
 
     public static String get(final String urlstr, Map<String, Object> params){
+        return get(urlstr, params, null);
+    }
+
+    public static String get(final String urlstr, Map<String, Object> params, Map<String,Object> headers){
         String url = urlstr;
         try{
             url = appendParamsToUrl(urlstr, params);
             HttpURLConnection conn = getConnection(url, "get");
+            //添加header
+            if(headers != null && headers.size() > 0){
+                for(Map.Entry<String, Object> header : headers.entrySet()){
+                    conn.setRequestProperty(header.getKey(), header.getValue().toString());
+                }
+            }
             return parseResponse(urlstr, conn);
         }catch(Exception e){
             throw new RuntimeException(e);
@@ -149,8 +162,38 @@ public class HttpUtil {
         conn.setRequestMethod(method);
         conn.setRequestProperty("Connection","Keep-Alive");
         conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:40.0) Gecko/20100101 Firefox/40.0");
+        allowHttps(conn);
         return conn;
     }
+
+    private static void allowHttps(HttpURLConnection conn) {
+        if(conn instanceof HttpsURLConnection){
+            TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                    return new java.security.cert.X509Certificate[] {};
+                }
+                @Override
+                public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType)
+                        throws CertificateException {
+                }
+
+                @Override
+                public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType)
+                        throws CertificateException {
+                }
+            } };
+            try {
+                SSLContext sc = SSLContext.getInstance("SSL", "SunJSSE");
+                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                HttpsURLConnection sconn = (HttpsURLConnection)conn;
+                sconn.setSSLSocketFactory(sc.getSocketFactory());
+                sconn.setHostnameVerifier((hostname, sslSession)->true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private static String parseResponse(String url, HttpURLConnection conn){
         InputStream httpIn = null;
