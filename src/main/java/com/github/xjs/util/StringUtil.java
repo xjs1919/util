@@ -204,4 +204,25 @@ public class StringUtil {
 		}
 		return sb.toString();
 	}
+
+	/***
+	 * 参考： https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin
+	 * */
+	public static String normalizeOrigin(String origin){
+		if(StringUtil.isEmpty(origin)){
+			return "";
+		}
+		String old = origin;
+		origin = origin.toLowerCase();
+		if(!origin.startsWith("http://") && !origin.startsWith("https://")){
+			return "";
+		}
+		if(origin.indexOf("?") >= 0 || origin.indexOf("&") >= 0 ||
+				origin.indexOf("'")>=0 || origin.indexOf("\"") >= 0 ||
+				origin.indexOf("(")>=0 || origin.indexOf(")") >= 0 ||
+				origin.indexOf("\r")>=0 || origin.indexOf("\n") >= 0){
+			return "";
+		}
+		return old;
+	}
 }

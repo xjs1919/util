@@ -42,6 +42,10 @@ public class IOUtil {
 		out.close();
 		return out.toByteArray();
 	}
+
+	public static String readInputStream(InputStream in, String charset) throws IOException{
+		return new String(readInputStream(in), charset);
+	}
 	
 	public static List<String> readInputStreamByLine(InputStream in) throws Exception{
 		BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
