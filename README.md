@@ -18,3 +18,21 @@ String str = JSON.toJSONString(u,SerializerFeature.WriteDateUseDateFormat);
 String str = JSON.toJSONStringWithDateFormat(u, "yyyy-MM-dd", SerializerFeature.WriteDateUseDateFormat);
 
 ```
+
+## SpringBoot不继承父parent如何打可运行的jar包？
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+        <mainClass>com.junbaor.test.App</mainClass>
+    </configuration>
+    <executions>
+        <execution>
+            <goals>
+                <goal>repackage</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
