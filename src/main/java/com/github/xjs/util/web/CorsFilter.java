@@ -20,10 +20,13 @@ public class CorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String  origin = request.getHeader("Origin");
-        if(!StringUtil.isEmpty(origin)){
+        if("null".equals(origin)){
+            //说明是本地直接打开的html
+            response.setHeader("Access-Control-Allow-Origin", "null");
+        }else if(!StringUtil.isEmpty(origin)){
             response.setHeader("Access-Control-Allow-Origin", StringUtil.normalizeOrigin(origin));
         }
-        response.setHeader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With,userId,token");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, No-Cache, X-Requested-With, If-Modified-Since, Pragma, Last-Modified, Cache-Control, Expires, Content-Type, X-E4M-With");
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS, DELETE, PATCH");
         response.setHeader("Access-Control-Max-Age", "3600");
         response.setHeader("Access-Control-Allow-Credentials", "true");
