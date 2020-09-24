@@ -41,4 +41,8 @@ String str = JSON.toJSONStringWithDateFormat(u, "yyyy-MM-dd", SerializerFeature.
 ```xml
 insert指定列，如果value为null，表字段的默认值不会生效导致报错。
 sql里可以参考mysql的ifnull函数ifnull(#{userName},'')，oracle对应nvl()
+<insert id="insert" parameterType="com.github.xjs.springbootdemo.dao.Users">
+    insert into users (id, user_name)
+    values (#{id}, ifnull(#{userName},''))
+</insert>
 ```
