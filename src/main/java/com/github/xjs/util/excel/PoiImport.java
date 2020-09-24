@@ -1,6 +1,8 @@
 package com.github.xjs.util.excel;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.github.xjs.util.IOUtil;
 import org.apache.poi.POIXMLException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
@@ -224,8 +227,8 @@ public class PoiImport {
             log.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }  
-    }  
-    
+    }
+
    private static String getCellValue(Cell cell){  
         String cellValue = "";  
         if(cell == null){  
@@ -236,19 +239,24 @@ public class PoiImport {
             case Cell.CELL_TYPE_NUMERIC: //数字  
             	SimpleDateFormat sdf = null;
             	short format = cell.getCellStyle().getDataFormat();
-            	 if (format == 14 || format == 31 || format == 57 || format == 58  
-                         || (176<=format && format<=178) || (182<=format && format<=196) 
-                         || (210<=format && format<=213) || (208==format ) ) { // 日期
-                     sdf = new SimpleDateFormat("yyyy-MM-dd");
-                     double value = cell.getNumericCellValue();
-                     Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value);
-                     cellValue = sdf.format(date);
-                 } else if (format == 20 || format == 32 || format==183 || (200<=format && format<=209) ) { // 时间
-                     sdf = new SimpleDateFormat("HH:mm");
-                     double value = cell.getNumericCellValue();
-                     Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value);
-                     cellValue = sdf.format(date);
-                 } else { // 不是日期格式
+            	if (format == 22) {
+            		sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            	} else if (format == 14 || format == 31 ) {
+            		sdf = new SimpleDateFormat("yyyy-MM-dd");
+				}else if(format == 57){
+            		sdf = new SimpleDateFormat("yyyy-MM");
+            	}else if(format == 58 || format == 176){
+					sdf = new SimpleDateFormat("MM-dd");
+				}else if (format == 21 || format == 33 ) {
+            		sdf = new SimpleDateFormat("HH:mm:ss");
+				 } else if (format == 20 || format == 32 ) {
+            		sdf = new SimpleDateFormat("HH:mm");
+                 }
+            	 if(sdf != null){
+					 double value = cell.getNumericCellValue();
+					 Date date = org.apache.poi.ss.usermodel.DateUtil.getJavaDate(value);
+					 cellValue = sdf.format(date);
+				 }else { // 不是日期格式
                 	 cellValue = String.valueOf(cell.getNumericCellValue());
                 	 cellValue = new BigDecimal(cellValue).stripTrailingZeros().toPlainString();
                  }
@@ -273,7 +281,12 @@ public class PoiImport {
                 break;  
         }  
         return cellValue;  
-    }  
-    
+    }
+
+	public static void main(String[] args)throws Exception {
+		File file = new File("C:\\Users\\xjs\\Desktop\\aa.xlsx");
+		byte[] bytes = IOUtil.readInputStream(new FileInputStream(file));
+		readExcel("aa.xlsx", bytes,0, false);
+	}
     
 }
