@@ -46,3 +46,8 @@ sql里可以参考mysql的ifnull函数ifnull(#{userName},'')，oracle对应nvl()
     values (#{id}, ifnull(#{userName},''))
 </insert>
 ```
+
+## 手动deploy jar包到maven私服
+```xml
+mvn deploy:deploy-file -DgroupId=*** -DartifactId=***  -Dversion=***  -Dpackaging=jar -Dfile="***.jar" -Dsources="***-sources.jar"  -Durl=http://***/nexus/content/repositories/releases/ -DrepositoryId=nexus-release --settings D:\apache-maven-3.6.3\conf\settings.xml
+```
