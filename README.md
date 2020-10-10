@@ -56,3 +56,31 @@ mvn deploy:deploy-file -DgroupId=*** -DartifactId=***  -Dversion=***  -Dpackagin
 ```sh
 正则替换：^[\s\t]*\n
 ```
+
+## SpringBoot日期格式处理
+```java
+@JsonComponent
+public class DateConfigure {
+    @Value("${spring.jackson.date-format:yyyy-MM-dd HH:mm:ss}")
+    private String pattern;
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilder() {
+        return builder -> {
+            TimeZone tz = TimeZone.getTimeZone("GMT+8");
+            DateFormat df = new SimpleDateFormat(pattern);
+            df.setTimeZone(tz);
+            builder.failOnEmptyBeans(false)
+                    .failOnUnknownProperties(false)
+                    .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                    .dateFormat(df);
+        };
+    }
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer localDateTimeCustomizer() {
+        return builder -> builder.serializerByType(LocalDateTime.class,
+                new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(pattern)));
+    }
+}
+//如果有特殊格式，可以用@JsonFormat定制：
+@JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
+```
