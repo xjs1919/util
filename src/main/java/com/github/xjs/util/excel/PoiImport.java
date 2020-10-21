@@ -245,9 +245,10 @@ public class PoiImport {
             		sdf = new SimpleDateFormat("yyyy-MM-dd");
 				}else if(format == 57){
             		sdf = new SimpleDateFormat("yyyy-MM");
-            	}else if(format == 58 || format == 176){
+            	}else if(format == 58){
 					sdf = new SimpleDateFormat("MM-dd");
-				}else if (format == 21 || format == 33 ) {
+				}else if (format == 21 || format == 33 ||
+						format == 176 || format == 177 || format == 178 || format == 179) {
             		sdf = new SimpleDateFormat("HH:mm:ss");
 				 } else if (format == 20 || format == 32 ) {
             		sdf = new SimpleDateFormat("HH:mm");
