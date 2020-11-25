@@ -84,3 +84,48 @@ public class DateConfigure {
 //如果有特殊格式，可以用@JsonFormat定制：
 @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
 ```
+
+## nginx配置跨域
+```xml
+server {
+         listen  80 default_server;
+         server_name _;  
+ 
+         add_header Access-Control-Allow-Credentials true;
+         add_header Access-Control-Allow-Origin $http_origin;
+         
+              
+         location /file {
+            if ($request_method = 'OPTIONS') {
+                add_header Access-Control-Allow-Origin $http_origin;
+                add_header Access-Control-Allow-Methods $http_access_control_request_method;
+                add_header Access-Control-Allow-Credentials true;
+                add_header Access-Control-Allow-Headers $http_access_control_request_headers;
+                add_header Access-Control-Max-Age 1728000;
+                return 204;
+             }         
+        }
+ 
+    }
+```
+
+## Spring跨域
+```java
+@Configuration
+public class CorsConfig {
+ 
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); //支持cookie 跨域
+        config.setAllowedOrigins(Arrays.asList("*"));
+        config.setAllowedHeaders(Arrays.asList("*"));
+        config.setAllowedMethods(Arrays.asList("*"));
+        config.setMaxAge(300L);//设置时间有效
+ 
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+}
+```
