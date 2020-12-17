@@ -24,7 +24,9 @@ public class CRUDUtil {
         if(CollectionUtil.isEmpty(dbList)){
             for(T input : inputList){
                 T combined = matcher.preInsert(input);
-                result.getAddList().add(combined);
+                if(combined != null){
+                    result.getAddList().add(combined);
+                }
             }
             return result;
         }
@@ -33,12 +35,16 @@ public class CRUDUtil {
             //input有    db没有 需要insert
             if(db == null){
                 T combined = matcher.preInsert(input);
-                result.getAddList().add(combined);
+                if(combined != null){
+                    result.getAddList().add(combined);
+                }
             }
             // input有    db有   需要update
             if(db != null){
                 T combined = matcher.preUpdate(db, input);
-                result.getUpdList().add(combined);
+                if(combined != null){
+                    result.getUpdList().add(combined);
+                }
             }
         }
         for(T db : dbList){
@@ -46,7 +52,9 @@ public class CRUDUtil {
             //input没有  db有   需要delete
             if(input == null){
                 T combined = matcher.preDelete(db);
-                result.getDelList().add(combined);
+                if(combined != null){
+                    result.getDelList().add(combined);
+                }
             }
         }
         return result;
