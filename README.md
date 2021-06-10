@@ -129,3 +129,10 @@ public class CorsConfig {
     }
 }
 ```
+
+## mysql大分页优化
+```sql
+# mysql的查询完全命中索引的时候,称为覆盖索引,是非常快的,因为查询只需要在索引上进行查找,之后可以直接返回,而不用再回数据表拿数据.
+# 因此我们可以先查出索引的ID,然后根据Id拿数据
+select * from (select id from job limit 1000000,100) a left join job b on a.id = b.id;
+```
