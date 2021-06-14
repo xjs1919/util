@@ -136,3 +136,8 @@ public class CorsConfig {
 # 因此我们可以先查出索引的ID,然后根据Id拿数据
 select * from (select id from job limit 1000000,100) a left join job b on a.id = b.id;
 ```
+
+### macbook安装brew
+```sh
+/bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
+```
