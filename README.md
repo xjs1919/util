@@ -141,3 +141,35 @@ select * from (select id from job limit 1000000,100) a left join job b on a.id =
 ```sh
 /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 ```
+
+### git操作
+
+- 1.基于tag创建新分支
+```bash
+git branch sprint-xjs-temp（新分支） sprint-da75a44-20201201164256（已有tag）#创建新分支
+git checkout sprint-xjs-temp # 切换到新分支
+git push origin sprint-xjs-temp # 提交到服务端
+```
+
+- 2.基于commit创建新分支
+```bash
+git show f58e0955 # 查找完整的cimmit id
+git checkout -b temp_xiaoye_210618 f58e0955d9097738d2c26a73be26880a223dc114 # 创建新分支
+git push origin temp_xiaoye_210618 # 提交到服务端
+```
+
+- 3.分支merge,develop分支merge到master
+```bash
+git checkout master #切换到master
+git merge origin/develop # meger develop
+git push origin master # 提交到master
+```
+
+- 4.删除分支dev_old 
+```bash
+git checkout dev_new # 切换到北的分支
+git brand -d dev_old # 本地删除分支
+git brand -D dev_old # 强制删除本地分支
+git push origin --delete dev_old # 远程删除
+```
+
