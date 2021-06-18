@@ -37,7 +37,8 @@ String str = JSON.toJSONStringWithDateFormat(u, "yyyy-MM-dd", SerializerFeature.
 </plugin>
 ```
 
-## Mybatis插入null改为空字符串
+## MySQL相关
+- 1.Mybatis插入null改为空字符串
 ```xml
 insert指定列，如果value为null，表字段的默认值不会生效导致报错。
 sql里可以参考mysql的ifnull函数ifnull(#{userName},'')，oracle对应nvl()
@@ -45,6 +46,41 @@ sql里可以参考mysql的ifnull函数ifnull(#{userName},'')，oracle对应nvl()
     insert into users (id, user_name)
     values (#{id}, ifnull(#{userName},''))
 </insert>
+```
+- 2.mysql大分页优化
+```sql
+# mysql的查询完全命中索引的时候,称为覆盖索引,是非常快的,因为查询只需要在索引上进行查找,之后可以直接返回,而不用再回数据表拿数据.
+# 因此我们可以先查出索引的ID,然后根据Id拿数据
+select * from (select id from job limit 1000000,100) a left join job b on a.id = b.id;
+```
+
+- 3.insert on duplicate key update
+```xml
+<insert id="insertOnDuplicateKeyUpdate"
+            parameterType="com.github.xjs.domain.UserEntity">
+  <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+    select last_insert_id() as id
+  </selectKey>
+  insert into user_entity
+  <trim prefix="(" suffix=")" suffixOverrides=",">
+    <if test="name != null">name,</if>
+    <if test="age != null">age,</if>
+  </trim>
+  <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <if test="name != null">#{name,jdbcType=VARCHAR},</if>
+    <if test="age != null">#{age,jdbcType=INTEGER},</if>
+  </trim>
+  <trim prefix="ON DUPLICATE KEY UPDATE" suffixOverrides=",">
+    <if test="name != null">name = #{name,jdbcType=VARCHAR},</if>
+    <if test="age != null">age = #{age,jdbcType=INTEGER},</if>
+  </trim>
+</insert>
+<!-- 
+1. 如果你插入的记录导致一个UNIQUE索引或者primary key(主键)出现重复，那么就会认为该条记录存在，则执行update语句而不是insert语句，反之，则执行insert语句而不是更新语句。
+2. 所以 ON DUPLICATE KEY UPDATE是不能写where条件的
+3. 如果插入了一个新行，则受影响的行数是1，如果修改了已存在的一行数据，则受影响的行数是2，如果值不变，则受影响行数是0
+4. select last_insert_id()在insert的时候返回自增主键，否则返回0
+-->
 ```
 
 ## 手动deploy jar包到maven私服
@@ -130,12 +166,6 @@ public class CorsConfig {
 }
 ```
 
-## mysql大分页优化
-```sql
-# mysql的查询完全命中索引的时候,称为覆盖索引,是非常快的,因为查询只需要在索引上进行查找,之后可以直接返回,而不用再回数据表拿数据.
-# 因此我们可以先查出索引的ID,然后根据Id拿数据
-select * from (select id from job limit 1000000,100) a left join job b on a.id = b.id;
-```
 
 ### macbook安装brew
 ```sh
