@@ -79,7 +79,6 @@ select * from (select id from job limit 1000000,100) a left join job b on a.id =
 1. 如果你插入的记录导致一个UNIQUE索引或者primary key(主键)出现重复，那么就会认为该条记录存在，则执行update语句而不是insert语句，反之，则执行insert语句而不是更新语句。
 2. 所以 ON DUPLICATE KEY UPDATE是不能写where条件的
 3. 如果插入了一个新行，则受影响的行数是1，如果修改了已存在的一行数据，则受影响的行数是2，如果值不变，则受影响行数是0
-4. select last_insert_id()在insert的时候返回自增主键，否则返回0
 -->
 ```
 
@@ -93,7 +92,8 @@ mvn deploy:deploy-file -DgroupId=*** -DartifactId=***  -Dversion=***  -Dpackagin
 正则替换：^[\s\t]*\n
 ```
 
-## SpringBoot日期格式处理
+## SpringBoot相关
+- 1.日期处理
 ```java
 @JsonComponent
 public class DateConfigure {
@@ -120,7 +120,26 @@ public class DateConfigure {
 //如果有特殊格式，可以用@JsonFormat定制：
 @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
 ```
-
+- 2.Long统一转String返回
+```java
+@Configuration
+public class WebConfigure implements WebMvcConfigurer {
+    @Override
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper = jackson2HttpMessageConverter.getObjectMapper();
+        //不显示为null的字段
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        objectMapper.registerModule(simpleModule);
+        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
+        //放到第一个
+        converters.add(0, jackson2HttpMessageConverter);
+    }
+}
+```
 ## nginx配置跨域
 ```xml
 server {
