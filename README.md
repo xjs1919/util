@@ -57,10 +57,7 @@ select * from (select id from job limit 1000000,100) a left join job b on a.id =
 - 3.insert on duplicate key update
 ```xml
 <insert id="insertOnDuplicateKeyUpdate"
-            parameterType="com.github.xjs.domain.UserEntity">
-  <selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
-    select last_insert_id() as id
-  </selectKey>
+            parameterType="com.github.xjs.domain.UserEntity" useGeneratedKeys="true" keyProperty="id" >
   insert into user_entity
   <trim prefix="(" suffix=")" suffixOverrides=",">
     <if test="name != null">name,</if>
