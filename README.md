@@ -77,6 +77,32 @@ select * from (select id from job limit 1000000,100) a left join job b on a.id =
 2. 所以 ON DUPLICATE KEY UPDATE是不能写where条件的
 3. 如果插入了一个新行，则受影响的行数是1，如果修改了已存在的一行数据，则受影响的行数是2，如果值不变，则受影响行数是0
 -->
+
+- 4.insert on duplicate key update容易引发死锁
+替换的办法:
+```java
+try{
+    insert();
+}catch(DuplicateKeyExceprion e){
+    update();
+}
+```
+- 5.使用不同的where条件update同一条记录容易引发死锁
+比如:
+```java
+var entity = select * from table where unique_key = #{uniqueKey};
+if(entity == null){
+    try{
+        insert();
+    }catch(DuplicateKeyExceprion e){
+        // 根据唯一索引更新
+        updateByUniqueKey();
+    }
+}else{
+    // 根据主键更新
+    updateById();
+}
+// 解决办法是要么都使用updateByUniqueKey()要么都使用updateById()
 ```
 
 ## 手动deploy jar包到maven私服
