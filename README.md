@@ -88,23 +88,6 @@ try{
     update();
 }
 ```
-- 5.使用不同的where条件update同一条记录容易引发死锁
-比如:
-```java
-var entity = select * from table where unique_key = #{uniqueKey};
-if(entity == null){
-    try{
-        insert();
-    }catch(DuplicateKeyExceprion e){
-        // 根据唯一索引更新
-        updateByUniqueKey();
-    }
-}else{
-    // 根据主键更新
-    updateById();
-}
-// 解决办法是要么都使用updateByUniqueKey()要么都使用updateById()
-```
 
 ## 手动deploy jar包到maven私服
 ```xml
