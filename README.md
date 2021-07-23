@@ -77,6 +77,7 @@ select * from (select id from job limit 1000000,100) a left join job b on a.id =
 2. 所以 ON DUPLICATE KEY UPDATE是不能写where条件的
 3. 如果插入了一个新行，则受影响的行数是1，如果修改了已存在的一行数据，则受影响的行数是2，如果值不变，则受影响行数是0
 -->
+```
 
 - 4.insert on duplicate key update容易引发死锁
 替换的办法:
