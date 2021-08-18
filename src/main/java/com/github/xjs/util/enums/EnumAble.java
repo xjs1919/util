@@ -1,6 +1,9 @@
 package com.github.xjs.util.enums;
 
+/**
+ * @author 605162215@qq.com
+ */
 public interface EnumAble<V> {
-	public V getValue();
-	public String getLabel();
+	V getValue();
+	String getLabel();
 }
