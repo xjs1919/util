@@ -11,6 +11,8 @@ public class CodeMsg implements ICodeMsg{
 	
 	public static CodeMsg SUCCESS = new CodeMsg(ICodeMsg.SUCCESS_CODE, ICodeMsg.SUCCESS_MSG);
 	public static CodeMsg SERVER_ERROR = new CodeMsg(ICodeMsg.SERVER_ERROR_CODE, ICodeMsg.SERVER_ERROR_MSG);
+	public static CodeMsg VALIDATE_ERROR = new CodeMsg(400, "参数检验出错:%s");
+	public static CodeMsg BUSINESS_ERROR = new CodeMsg(ICodeMsg.SERVER_ERROR_CODE, "%s");
 	//TODO 添加其他的错误码和错误信息
 	;
 
