@@ -126,6 +126,20 @@ public class DateConfigure {
 }
 //如果有特殊格式，可以用@JsonFormat定制：
 @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
+//还可以这样
+@JsonSerialize(using = DateToStringSerializer.class)
+public class DateToStringSerializer extends JsonSerializer<Date> {
+
+    @Override
+    public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
+            throws IOException {
+        if (date != null) {
+            jsonGenerator.writeString(DateUtil.format(date,DateUtil.FORMAT_YMDHMS));
+        } else {
+            jsonGenerator.writeNull();
+        }
+    }
+}
 ```
 - 2.Long统一转String返回
 ```java
@@ -144,6 +158,18 @@ public class WebConfigure implements WebMvcConfigurer {
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
         //放到第一个
         converters.add(0, jackson2HttpMessageConverter);
+    }
+}
+// 或者可以这样
+@JsonSerialize(using = LongToStringSerializer.class)
+public class LongToStringSerializer extends JsonSerializer<Long> {
+    @Override
+    public void serialize(Long value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value != null) {
+            gen.writeString(value.toString());
+        } else {
+            gen.writeNull();
+        }
     }
 }
 ```
