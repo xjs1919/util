@@ -22,6 +22,8 @@ public class CRUDUtil {
         if(inputList == null){
             throw new IllegalArgumentException("inputList is nulll");
         }
+        inputList = new ArrayList<>(inputList);
+        dbList = new ArrayList<>(dbList);
         GroupResult<DO> result = new GroupResult<DO>();
         //db为空，则全部insert
         if(CollectionUtil.isEmpty(dbList)){
@@ -34,7 +36,8 @@ public class CRUDUtil {
             }
             return result;
         }
-        for(DTO input : inputList){
+        for(int i=0; i<inputList.size(); i++){
+            DTO input = inputList.get(i);
             DO db = null;
             for(DO dbElem : dbList){
                 if(handler.isMatches(input, dbElem)){
@@ -49,15 +52,17 @@ public class CRUDUtil {
                     DO domain = handler.dtoToDo(combined);
                     result.getAddList().add(domain);
                 }
-            }
-            // input有    db有   需要update
-            if(db != null){
+            }else {
+                // input有    db有   需要update
                 DTO combined = handler.preUpdate(db, input);
                 if(combined != null){
                     DO domain = handler.dtoToDo(combined);
                     result.getUpdList().add(domain);
                 }
+                dbList.remove(db);
             }
+            inputList.remove(i);
+            i--;
         }
         for(DO db : dbList){
             DTO input = null;
@@ -81,7 +86,7 @@ public class CRUDUtil {
     public interface GroupHandler<DTO,DO>{
         /**比较两个元素是否相等*/
         boolean isMatches(DTO input, DO db);
-        /**dto to do*/
+        /**dto to do, BeanUtils或者MapStruct*/
         DO dtoToDo(DTO input);
         /**在insert前，可以手动设置id*/
         default DTO preInsert(DTO input){
@@ -111,8 +116,6 @@ public class CRUDUtil {
             return delList;
         }
     }
-
-
 
     public static void main(String[] args) {
         List<Integer> input = Arrays.asList(1,2,3);
