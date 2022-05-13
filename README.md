@@ -255,3 +255,19 @@ git brand -D dev_old # 强制删除本地分支
 git push origin --delete dev_old # 远程删除
 ```
 
+
+### 虚拟机重启ip总是变动
+- 1.进入网卡配置目录
+```sh
+[root@sc-chenlu ~]# cd /etc/sysconfig/network-scripts/
+```
+- 2.编辑ifcfg-enxxx网卡的配置文件
+```sh
+vi ifcfg-eno16777736
+修改：BOOTPROTO=none           #none手工指定ip，dhcp 表示虚拟机动态获得ip地址
+添加：IPADDR=192.168.136.135   #IPADDR指定具体的ip地址
+```
+- 3.重新启动网络服务使修改生效
+```sh
+service  network  restart
+```
