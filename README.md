@@ -99,6 +99,12 @@ mvn deploy:deploy-file -DgroupId=*** -DartifactId=***  -Dversion=***  -Dpackagin
 正则替换：^[\s\t]*\n
 ```
 
+## EmEditor js格式化- 添加宏
+```js
+document.selection.SelectAll();
+document.selection.Text = JSON.stringify(JSON.parse(document.selection.Text), null, '\t');
+```
+
 ## SpringBoot相关
 - 1.日期处理
 ```java
